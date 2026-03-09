@@ -298,8 +298,8 @@ export default function Admin() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
-  const inputCls = "w-full bg-white/[0.05] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-violet-500/50 transition-colors";
-  const selectCls = inputCls + " appearance-none";
+  const inputCls = "w-full bg-[#12172a] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-violet-500/50 transition-colors";
+  const selectCls = "w-full bg-[#12172a] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/50 transition-colors";
   const labelCls = "block text-xs text-white/40 mb-1";
   const btnPrimary = "px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium rounded-xl transition-colors flex items-center gap-2 disabled:opacity-50";
   const btnDanger = "px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 text-sm font-medium rounded-xl transition-colors flex items-center gap-2";
