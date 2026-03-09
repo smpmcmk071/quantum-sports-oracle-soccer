@@ -161,6 +161,7 @@ export default function Admin() {
   const [statsForm, setStatsForm] = useState({ wins: 0, losses: 0, draws: 0, goals_for: 0, goals_against: 0, goal_differential: 0 });
   const [statsStatus, setStatsStatus] = useState(null);
   const [statsMsg, setStatsMsg] = useState("");
+  const [initStatsLoading, setInitStatsLoading] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(u => {
