@@ -50,6 +50,7 @@
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import Matches from './pages/Matches';
+import Predictions from './pages/Predictions';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +58,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "Admin": Admin,
     "Matches": Matches,
+    "Predictions": Predictions,
 }
 
 export const pagesConfig = {
