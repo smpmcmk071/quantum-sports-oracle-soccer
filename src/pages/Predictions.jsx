@@ -111,7 +111,7 @@ Based on numerological compatibility, astrological alignments, cosmic energy, an
           </div>
           <div className="flex gap-3">
             <select
-              className="flex-1 bg-white/[0.05] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/50 transition-colors"
+              className="flex-1 bg-[#12172a] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/50 transition-colors"
               value={selectedGame}
               onChange={e => setSelectedGame(e.target.value)}
             >
