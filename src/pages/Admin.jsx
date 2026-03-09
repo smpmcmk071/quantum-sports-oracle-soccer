@@ -454,6 +454,44 @@ Keep stats realistic for early season (5 games played max).`,
     setPlayerStatsProgress("");
   }
 
+  async function initializeAllTeamStats() {
+    setInitStatsLoading(true);
+    setStatsStatus(null);
+    try {
+      const existing = await base44.entities.TeamStats.filter({ season: 2026 });
+      const existingTeamIds = new Set(existing.map(ts => ts.team_id));
+      
+      const toCreate = teams
+        .filter(t => !existingTeamIds.has(t.id))
+        .map(t => ({
+          team_id: t.id,
+          season: 2026,
+          league: "MLS",
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          goals_for: 0,
+          goals_against: 0,
+          goal_differential: 0,
+          points: 0,
+          games_played: 0,
+        }));
+
+      if (toCreate.length === 0) {
+        setStatsStatus("success");
+        setStatsMsg(`All ${teams.length} teams already have standings initialized.`);
+      } else {
+        await base44.entities.TeamStats.bulkCreate(toCreate);
+        setStatsStatus("success");
+        setStatsMsg(`✓ Created standings for ${toCreate.length} teams (${existing.length} already existed).`);
+      }
+    } catch (e) {
+      setStatsStatus("error");
+      setStatsMsg("Failed: " + e.message);
+    }
+    setInitStatsLoading(false);
+  }
+
   async function saveTeamStats() {
     if (!statsTeamId) {
       setStatsStatus("error");
