@@ -8,6 +8,7 @@ const navItems = [
   { label: "Dashboard", page: "Dashboard", icon: LayoutDashboard },
   { label: "Matches", page: "Matches", icon: Calendar },
   { label: "Predictions", page: "Predictions", icon: TrendingUp },
+  { label: "Standings", page: "Standings", icon: Trophy },
 ];
 
 export default function Layout({ children, currentPageName }) {
