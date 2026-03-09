@@ -344,78 +344,73 @@ Mark the top 11 starters as is_starter: true.`,
       }
 
       let totalStatsCreated = 0;
+      const BATCH_SIZE = 8; // Limit players per request
+      const DELAY_MS = 2000; // 2 second delay between teams
 
       for (let i = 0; i < validTeams.length; i++) {
         const team = validTeams[i];
-        setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Fetching players for ${team.name}…`);
         
+        // Add delay between teams (except first)
+        if (i > 0) {
+          setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Waiting before next team…`);
+          await new Promise(r => setTimeout(r, DELAY_MS));
+        }
+
+        setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Fetching players for ${team.name}…`);
         const players = await base44.entities.Player.filter({ team_id: team.id });
+        
         if (players.length === 0) continue;
 
-        setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Generating stats for ${players.length} ${team.name} players…`);
-        const playerList = players.map(p => ({ id: p.id, name: p.name, position: p.position }));
+        // Process players in batches
+        for (let j = 0; j < players.length; j += BATCH_SIZE) {
+          const batch = players.slice(j, j + BATCH_SIZE);
+          setPlayerStatsProgress(`${i + 1}/${validTeams.length}: ${team.name} - Stats ${j + 1}/${players.length}…`);
+          
+          const playerList = batch.map(p => ({ id: p.id, name: p.name, position: p.position }));
 
-        const result = await base44.integrations.Core.InvokeLLM({
-          prompt: `Generate realistic 2026 MLS season stats (through ~matchday 5) for the following ${team.name} players.
+          const result = await base44.integrations.Core.InvokeLLM({
+            prompt: `Generate realistic 2026 MLS season stats (through ~matchday 5) for the following ${team.name} players.
 Players: ${JSON.stringify(playerList)}
 For each player provide: goals, assists, appearances, starts, minutes_played, shots_per_game, pass_accuracy (0-100), tackles_per_game, yellow_cards, rating (6.0-8.5).
 For GK positions also provide: clean_sheets, saves_per_game.
 Keep stats realistic for early season (5 games played max).`,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              stats: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    player_id: { type: "string" },
-                    goals: { type: "number" },
-                    assists: { type: "number" },
-                    appearances: { type: "number" },
-                    starts: { type: "number" },
-                    minutes_played: { type: "number" },
-                    shots_per_game: { type: "number" },
-                    pass_accuracy: { type: "number" },
-                    tackles_per_game: { type: "number" },
-                    yellow_cards: { type: "number" },
-                    clean_sheets: { type: "number" },
-                    saves_per_game: { type: "number" },
-                    rating: { type: "number" },
+            response_json_schema: {
+              type: "object",
+              properties: {
+                stats: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      player_id: { type: "string" },
+                      goals: { type: "number" },
+                      assists: { type: "number" },
+                      appearances: { type: "number" },
+                      starts: { type: "number" },
+                      minutes_played: { type: "number" },
+                      shots_per_game: { type: "number" },
+                      pass_accuracy: { type: "number" },
+                      tackles_per_game: { type: "number" },
+                      yellow_cards: { type: "number" },
+                      clean_sheets: { type: "number" },
+                      saves_per_game: { type: "number" },
+                      rating: { type: "number" },
+                    }
                   }
                 }
               }
             }
-          }
-        });
+          });
 
-        const statsToCreate = (result.stats || []).map(s => ({
-          player_id: s.player_id,
-          team_id: team.id,
-          season: 2026,
-          league: "MLS",
-          goals: s.goals || 0,
-          assists: s.assists || 0,
-          appearances: s.appearances || 0,
-          starts: s.starts || 0,
-          minutes_played: s.minutes_played || 0,
-          shots_per_game: s.shots_per_game || 0,
-          pass_accuracy: s.pass_accuracy || 0,
-          tackles_per_game: s.tackles_per_game || 0,
-          yellow_cards: s.yellow_cards || 0,
-          clean_sheets: s.clean_sheets || 0,
-          saves_per_game: s.saves_per_game || 0,
-          rating: s.rating || 7.0,
-        }));
-
-        setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Saving stats for ${team.name}…`);
-        await base44.entities.PlayerStats.bulkCreate(statsToCreate);
-
-        await Promise.all((result.stats || []).map(s =>
-          base44.entities.Player.update(s.player_id, {
+          const statsToCreate = (result.stats || []).map(s => ({
+            player_id: s.player_id,
+            team_id: team.id,
+            season: 2026,
+            league: "MLS",
             goals: s.goals || 0,
             assists: s.assists || 0,
             appearances: s.appearances || 0,
+            starts: s.starts || 0,
             minutes_played: s.minutes_played || 0,
             shots_per_game: s.shots_per_game || 0,
             pass_accuracy: s.pass_accuracy || 0,
@@ -423,10 +418,28 @@ Keep stats realistic for early season (5 games played max).`,
             yellow_cards: s.yellow_cards || 0,
             clean_sheets: s.clean_sheets || 0,
             saves_per_game: s.saves_per_game || 0,
-          })
-        ));
+            rating: s.rating || 7.0,
+          }));
 
-        totalStatsCreated += statsToCreate.length;
+          await base44.entities.PlayerStats.bulkCreate(statsToCreate);
+
+          await Promise.all((result.stats || []).map(s =>
+            base44.entities.Player.update(s.player_id, {
+              goals: s.goals || 0,
+              assists: s.assists || 0,
+              appearances: s.appearances || 0,
+              minutes_played: s.minutes_played || 0,
+              shots_per_game: s.shots_per_game || 0,
+              pass_accuracy: s.pass_accuracy || 0,
+              tackles_per_game: s.tackles_per_game || 0,
+              yellow_cards: s.yellow_cards || 0,
+              clean_sheets: s.clean_sheets || 0,
+              saves_per_game: s.saves_per_game || 0,
+            })
+          ));
+
+          totalStatsCreated += statsToCreate.length;
+        }
       }
 
       setPlayerStatsStatus("success");
