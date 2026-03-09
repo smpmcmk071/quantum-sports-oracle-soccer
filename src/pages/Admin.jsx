@@ -258,6 +258,69 @@ export default function Admin() {
     setFetchLoading(false);
   }
 
+  async function loadFullRoster() {
+    setRosterLoading(true);
+    setRosterStatus(null);
+    setRosterProgress("Asking AI…");
+    const team = teams.find(t => t.id === rosterTeamId);
+    if (!team) return;
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Generate the current 2026 MLS season roster for ${team.name} (MLS team from ${team.city}). 
+Include 22-25 players with realistic names, positions, birth dates, nationalities, and jersey numbers.
+Include a mix of GK (2), CB (3-4), LB (2), RB (2), CDM (2), CM (2-3), CAM (1-2), LW (1-2), RW (1-2), ST (2-3), CF (1).
+Mark the top 11 starters as is_starter: true.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            players: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  position: { type: "string" },
+                  birth_date: { type: "string", description: "YYYY-MM-DD" },
+                  nationality: { type: "string" },
+                  jersey_number: { type: "number" },
+                  is_starter: { type: "boolean" },
+                }
+              }
+            }
+          }
+        }
+      });
+
+      const players = result.players || [];
+      setRosterProgress(`Saving ${players.length} players…`);
+
+      const toCreate = players.map(p => ({
+        name: p.name,
+        team_id: rosterTeamId,
+        position: p.position,
+        birth_date: p.birth_date,
+        nationality: p.nationality,
+        jersey_number: p.jersey_number,
+        is_starter: p.is_starter || false,
+        league: "MLS",
+        life_path_number: calcLifePath(p.birth_date),
+        destiny_number: calcDestiny(p.name),
+        zodiac_sign: getZodiac(p.birth_date),
+        chinese_zodiac: getChineseZodiac(p.birth_date),
+      }));
+
+      await base44.entities.Player.bulkCreate(toCreate);
+      setRosterStatus("success");
+      setRosterMsg(`✓ Loaded ${toCreate.length} players for ${team.name}.`);
+      setRosterTeamId("");
+    } catch (e) {
+      setRosterStatus("error");
+      setRosterMsg("Failed: " + e.message);
+    }
+    setRosterLoading(false);
+    setRosterProgress("");
+  }
+
   async function saveTeamStats() {
     if (!statsTeamId) {
       setStatsStatus("error");
