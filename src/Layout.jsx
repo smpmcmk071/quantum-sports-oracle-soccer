@@ -76,6 +76,14 @@ export default function Layout({ children, currentPageName }) {
       <main className="flex-1">
         {children}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-4 px-4 text-center">
+        <p className="text-[11px] text-white/20 leading-relaxed">
+          © {new Date().getFullYear()} Threshold7 Analytics & 7day11.com · All Rights Reserved.<br />
+          MLS data provided by ESPN. MLS and all team names/logos are trademarks of their respective owners. For entertainment purposes only.
+        </p>
+      </footer>
     </div>
   );
 }
