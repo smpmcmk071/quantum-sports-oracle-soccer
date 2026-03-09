@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Upload, Users, Calendar, BarChart2, RefreshCw, CheckCircle, AlertCircle, Database, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -148,7 +148,7 @@ export default function Admin() {
   const [statsStatus, setStatsStatus] = useState(null);
   const [statsMsg, setStatsMsg] = useState("");
 
-  useState(() => {
+  useEffect(() => {
     base44.auth.me().then(u => {
       setUser(u);
       setAuthChecked(true);
