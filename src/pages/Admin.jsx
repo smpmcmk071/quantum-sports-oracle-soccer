@@ -328,6 +328,108 @@ Mark the top 11 starters as is_starter: true.`,
     setRosterProgress("");
   }
 
+  async function loadPlayerStats() {
+    setPlayerStatsLoading(true);
+    setPlayerStatsStatus(null);
+    const team = teams.find(t => t.id === playerStatsTeamId);
+    if (!team) return;
+    try {
+      // Get players for this team
+      setPlayerStatsProgress("Fetching players…");
+      const players = await base44.entities.Player.filter({ team_id: playerStatsTeamId });
+      if (players.length === 0) {
+        setPlayerStatsStatus("error");
+        setPlayerStatsMsg("No players found for this team. Load the roster first.");
+        setPlayerStatsLoading(false);
+        return;
+      }
+
+      setPlayerStatsProgress(`Generating stats for ${players.length} players via AI…`);
+      const playerList = players.map(p => ({ id: p.id, name: p.name, position: p.position }));
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Generate realistic 2026 MLS season stats (through ~matchday 5) for the following ${team.name} players.
+Players: ${JSON.stringify(playerList)}
+For each player provide: goals, assists, appearances, starts, minutes_played, shots_per_game, pass_accuracy (0-100), tackles_per_game, yellow_cards, rating (6.0-8.5).
+For GK positions also provide: clean_sheets, saves_per_game.
+Keep stats realistic for early season (5 games played max).`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            stats: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  player_id: { type: "string" },
+                  goals: { type: "number" },
+                  assists: { type: "number" },
+                  appearances: { type: "number" },
+                  starts: { type: "number" },
+                  minutes_played: { type: "number" },
+                  shots_per_game: { type: "number" },
+                  pass_accuracy: { type: "number" },
+                  tackles_per_game: { type: "number" },
+                  yellow_cards: { type: "number" },
+                  clean_sheets: { type: "number" },
+                  saves_per_game: { type: "number" },
+                  rating: { type: "number" },
+                }
+              }
+            }
+          }
+        }
+      });
+
+      setPlayerStatsProgress("Saving stats…");
+      const statsToCreate = (result.stats || []).map(s => ({
+        player_id: s.player_id,
+        team_id: playerStatsTeamId,
+        season: 2026,
+        league: "MLS",
+        goals: s.goals || 0,
+        assists: s.assists || 0,
+        appearances: s.appearances || 0,
+        starts: s.starts || 0,
+        minutes_played: s.minutes_played || 0,
+        shots_per_game: s.shots_per_game || 0,
+        pass_accuracy: s.pass_accuracy || 0,
+        tackles_per_game: s.tackles_per_game || 0,
+        yellow_cards: s.yellow_cards || 0,
+        clean_sheets: s.clean_sheets || 0,
+        saves_per_game: s.saves_per_game || 0,
+        rating: s.rating || 7.0,
+      }));
+
+      await base44.entities.PlayerStats.bulkCreate(statsToCreate);
+
+      // Also update Player entity with the stats
+      await Promise.all((result.stats || []).map(s =>
+        base44.entities.Player.update(s.player_id, {
+          goals: s.goals || 0,
+          assists: s.assists || 0,
+          appearances: s.appearances || 0,
+          minutes_played: s.minutes_played || 0,
+          shots_per_game: s.shots_per_game || 0,
+          pass_accuracy: s.pass_accuracy || 0,
+          tackles_per_game: s.tackles_per_game || 0,
+          yellow_cards: s.yellow_cards || 0,
+          clean_sheets: s.clean_sheets || 0,
+          saves_per_game: s.saves_per_game || 0,
+        })
+      ));
+
+      setPlayerStatsStatus("success");
+      setPlayerStatsMsg(`✓ Stats loaded for ${statsToCreate.length} players on ${team.name}.`);
+      setPlayerStatsTeamId("");
+    } catch (e) {
+      setPlayerStatsStatus("error");
+      setPlayerStatsMsg("Failed: " + e.message);
+    }
+    setPlayerStatsLoading(false);
+    setPlayerStatsProgress("");
+  }
+
   async function saveTeamStats() {
     if (!statsTeamId) {
       setStatsStatus("error");
