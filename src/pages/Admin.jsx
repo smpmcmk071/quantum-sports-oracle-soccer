@@ -388,8 +388,27 @@ export default function Admin() {
           <StatusBadge status={gameStatus} message={gameMsg} />
         </Section>
 
-        {/* 4. Add Player */}
-        <Section title="4. Add MLS Player" icon={Users}>
+        {/* 4. Load Full Team Roster via AI */}
+        <Section title="4. Load Full Team Roster (AI)" icon={Users}>
+          <p className="text-sm text-white/40 mb-4">
+            Select a team and let AI generate the full 25-player roster with birth dates and positions automatically.
+          </p>
+          <div className="mb-4">
+            <label className={labelCls}>Team *</label>
+            <select className={selectCls} value={rosterTeamId} onChange={e => setRosterTeamId(e.target.value)}>
+              <option value="">Select team…</option>
+              {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+          </div>
+          <button onClick={loadFullRoster} disabled={rosterLoading || !rosterTeamId} className={btnPrimary}>
+            {rosterLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" />}
+            {rosterLoading ? `Loading roster… (${rosterProgress})` : "Generate & Load Full Roster"}
+          </button>
+          <StatusBadge status={rosterStatus} message={rosterMsg} />
+        </Section>
+
+        {/* 5. Add Single Player */}
+        <Section title="5. Add MLS Player Manually" icon={Users}>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="col-span-2">
               <label className={labelCls}>Full Name *</label>
