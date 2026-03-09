@@ -520,8 +520,8 @@ Mark the top 11 starters as is_starter: true.`,
           <StatusBadge status={playerStatus} message={playerMsg} />
         </Section>
 
-        {/* 5. Team Stats */}
-        <Section title="5. Enter Team Season Stats" icon={BarChart2}>
+        {/* 6. Team Stats */}
+        <Section title="6. Enter Team Season Stats" icon={BarChart2}>
           <div className="mb-4">
             <label className={labelCls}>Team *</label>
             <select className={selectCls} value={statsTeamId} onChange={e => setStatsTeamId(e.target.value)}>
