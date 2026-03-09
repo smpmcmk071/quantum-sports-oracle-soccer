@@ -648,8 +648,8 @@ Keep stats realistic for early season (5 games played max).`,
           <StatusBadge status={playerStatus} message={playerMsg} />
         </Section>
 
-        {/* 6. Team Stats */}
-        <Section title="6. Enter Team Season Stats" icon={BarChart2}>
+        {/* 7. Team Stats */}
+        <Section title="7. Enter Team Season Stats" icon={BarChart2}>
           <div className="mb-4">
             <label className={labelCls}>Team *</label>
             <select className={selectCls} value={statsTeamId} onChange={e => setStatsTeamId(e.target.value)}>
