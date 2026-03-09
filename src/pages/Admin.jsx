@@ -332,6 +332,7 @@ Mark the top 11 starters as is_starter: true.`,
   async function loadPlayerStats() {
     setPlayerStatsLoading(true);
     setPlayerStatsStatus(null);
+    setPlayerStatsProgress("");
     
     try {
       const teamsToProcess = playerStatsTeamId === "all" ? teams : [teams.find(t => t.id === playerStatsTeamId)];
@@ -345,36 +346,44 @@ Mark the top 11 starters as is_starter: true.`,
       }
 
       let totalStatsCreated = 0;
-      const BATCH_SIZE = 8; // Limit players per request
-      const DELAY_MS = 2000; // 2 second delay between teams
+      const BATCH_SIZE = 5; // Players per LLM request
+      const DELAY_BETWEEN_TEAMS = 3000; // 3 second delay between teams
+      const DELAY_BETWEEN_BATCHES = 1500; // 1.5 second delay between batches
 
       for (let i = 0; i < validTeams.length; i++) {
         const team = validTeams[i];
         
-        // Add delay between teams (except first)
+        // Delay before next team (except first)
         if (i > 0) {
-          setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Waiting before next team…`);
-          await new Promise(r => setTimeout(r, DELAY_MS));
+          setPlayerStatsProgress(`Team ${i}/${validTeams.length}: Waiting before ${team.name}…`);
+          await new Promise(r => setTimeout(r, DELAY_BETWEEN_TEAMS));
         }
 
-        setPlayerStatsProgress(`${i + 1}/${validTeams.length}: Fetching players for ${team.name}…`);
+        setPlayerStatsProgress(`Team ${i + 1}/${validTeams.length}: Loading ${team.name}…`);
         const players = await base44.entities.Player.filter({ team_id: team.id });
         
-        if (players.length === 0) continue;
+        if (players.length === 0) {
+          setPlayerStatsProgress(`Team ${i + 1}/${validTeams.length}: ${team.name} has no players, skipping…`);
+          continue;
+        }
 
         // Process players in batches
         for (let j = 0; j < players.length; j += BATCH_SIZE) {
           const batch = players.slice(j, j + BATCH_SIZE);
-          setPlayerStatsProgress(`${i + 1}/${validTeams.length}: ${team.name} - Stats ${j + 1}/${players.length}…`);
+          const batchNum = Math.floor(j / BATCH_SIZE) + 1;
+          const totalBatches = Math.ceil(players.length / BATCH_SIZE);
+          
+          setPlayerStatsProgress(`Team ${i + 1}/${validTeams.length}: ${team.name} - Batch ${batchNum}/${totalBatches}…`);
           
           const playerList = batch.map(p => ({ id: p.id, name: p.name, position: p.position }));
 
           const result = await base44.integrations.Core.InvokeLLM({
-            prompt: `Generate realistic 2026 MLS season stats (through ~matchday 5) for the following ${team.name} players.
-Players: ${JSON.stringify(playerList)}
-For each player provide: goals, assists, appearances, starts, minutes_played, shots_per_game, pass_accuracy (0-100), tackles_per_game, yellow_cards, rating (6.0-8.5).
-For GK positions also provide: clean_sheets, saves_per_game.
-Keep stats realistic for early season (5 games played max).`,
+            prompt: `Generate realistic 2026 MLS season stats (through ~matchday 5) for these ${team.name} players:
+${playerList.map(p => `${p.name} (${p.position})`).join(", ")}
+
+For each player provide: goals, assists, appearances (0-5), starts, minutes_played, shots_per_game, pass_accuracy (0-100), tackles_per_game, yellow_cards (0-2), rating (6.0-8.5).
+For GK only: clean_sheets, saves_per_game.
+Keep realistic for early season.`,
             response_json_schema: {
               type: "object",
               properties: {
@@ -422,29 +431,34 @@ Keep stats realistic for early season (5 games played max).`,
             rating: s.rating || 7.0,
           }));
 
-          await base44.entities.PlayerStats.bulkCreate(statsToCreate);
+          if (statsToCreate.length > 0) {
+            await base44.entities.PlayerStats.bulkCreate(statsToCreate);
+            await Promise.all((result.stats || []).map(s =>
+              base44.entities.Player.update(s.player_id, {
+                goals: s.goals || 0,
+                assists: s.assists || 0,
+                appearances: s.appearances || 0,
+                minutes_played: s.minutes_played || 0,
+                shots_per_game: s.shots_per_game || 0,
+                pass_accuracy: s.pass_accuracy || 0,
+                tackles_per_game: s.tackles_per_game || 0,
+                yellow_cards: s.yellow_cards || 0,
+                clean_sheets: s.clean_sheets || 0,
+                saves_per_game: s.saves_per_game || 0,
+              })
+            ));
+            totalStatsCreated += statsToCreate.length;
+          }
 
-          await Promise.all((result.stats || []).map(s =>
-            base44.entities.Player.update(s.player_id, {
-              goals: s.goals || 0,
-              assists: s.assists || 0,
-              appearances: s.appearances || 0,
-              minutes_played: s.minutes_played || 0,
-              shots_per_game: s.shots_per_game || 0,
-              pass_accuracy: s.pass_accuracy || 0,
-              tackles_per_game: s.tackles_per_game || 0,
-              yellow_cards: s.yellow_cards || 0,
-              clean_sheets: s.clean_sheets || 0,
-              saves_per_game: s.saves_per_game || 0,
-            })
-          ));
-
-          totalStatsCreated += statsToCreate.length;
+          // Delay before next batch
+          if (j + BATCH_SIZE < players.length) {
+            await new Promise(r => setTimeout(r, DELAY_BETWEEN_BATCHES));
+          }
         }
       }
 
       setPlayerStatsStatus("success");
-      setPlayerStatsMsg(`✓ Stats loaded for ${totalStatsCreated} players across ${validTeams.length} team${validTeams.length > 1 ? 's' : ''}.`);
+      setPlayerStatsMsg(`✓ Loaded stats for ${totalStatsCreated} players across ${validTeams.length} team${validTeams.length > 1 ? 's' : ''}.`);
       setPlayerStatsTeamId("");
     } catch (e) {
       setPlayerStatsStatus("error");
