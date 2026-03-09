@@ -711,8 +711,20 @@ Keep stats realistic for early season (5 games played max).`,
           <StatusBadge status={playerStatus} message={playerMsg} />
         </Section>
 
-        {/* 7. Team Stats */}
-        <Section title="7. Enter Team Season Stats" icon={BarChart2}>
+        {/* 7. Initialize All Team Standings */}
+        <Section title="7. Initialize All Team Standings" icon={BarChart2}>
+          <p className="text-sm text-white/40 mb-4">
+            Create empty standings (0-0-0 record) for all 30 MLS teams at once. Safe to re-run — skips teams that already have standings.
+          </p>
+          <button onClick={initializeAllTeamStats} disabled={initStatsLoading} className={btnPrimary}>
+            {initStatsLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BarChart2 className="w-4 h-4" />}
+            {initStatsLoading ? "Initializing…" : "Initialize All Team Standings"}
+          </button>
+          <StatusBadge status={statsStatus} message={statsMsg} />
+        </Section>
+
+        {/* 8. Update Team Stats */}
+        <Section title="8. Update Team Season Stats" icon={BarChart2}>
           <div className="mb-4">
             <label className={labelCls}>Team *</label>
             <select className={selectCls} value={statsTeamId} onChange={e => setStatsTeamId(e.target.value)}>
