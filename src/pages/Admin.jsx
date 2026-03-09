@@ -599,12 +599,13 @@ Keep stats realistic for early season (5 games played max).`,
         {/* 5. Load Player Stats via AI */}
         <Section title="5. Load Player Stats (AI)" icon={BarChart2}>
           <p className="text-sm text-white/40 mb-4">
-            Select a team to generate realistic 2026 season stats for all their loaded players. Requires roster to be loaded first.
+            Select a team or "All Teams" to generate realistic 2026 season stats for all loaded players. Requires rosters to be loaded first.
           </p>
           <div className="mb-4">
             <label className={labelCls}>Team *</label>
             <select className={selectCls} value={playerStatsTeamId} onChange={e => setPlayerStatsTeamId(e.target.value)}>
               <option value="">Select team…</option>
+              <option value="all">🌍 All Teams</option>
               {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
