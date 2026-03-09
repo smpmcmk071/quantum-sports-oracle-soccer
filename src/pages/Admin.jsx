@@ -651,19 +651,33 @@ Keep stats realistic for early season (5 games played max).`,
         {/* 5. Load Player Stats via AI */}
         <Section title="5. Load Player Stats (AI)" icon={BarChart2}>
           <p className="text-sm text-white/40 mb-4">
-            Select a team or "All Teams" to generate realistic 2026 season stats for all loaded players. Requires rosters to be loaded first.
+            Generates realistic 2026 season stats for all loaded players. Processes one team at a time with rate limiting to avoid backend overload.
           </p>
+          
+          {/* Quick All Teams Button */}
+          <button 
+            onClick={() => {
+              setPlayerStatsTeamId("all");
+              setTimeout(() => loadPlayerStats(), 0);
+            }}
+            disabled={playerStatsLoading} 
+            className={btnPrimary + " mb-4 w-full"}
+          >
+            {playerStatsLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BarChart2 className="w-4 h-4" />}
+            {playerStatsLoading ? `Loading… ${playerStatsProgress}` : "🚀 Load All Teams (Sequential)"}
+          </button>
+
+          {/* Or Select Individual Team */}
           <div className="mb-4">
-            <label className={labelCls}>Team *</label>
-            <select className={selectCls} value={playerStatsTeamId} onChange={e => setPlayerStatsTeamId(e.target.value)}>
+            <label className={labelCls}>Or Select Single Team</label>
+            <select className={selectCls} value={playerStatsTeamId === "all" ? "" : playerStatsTeamId} onChange={e => setPlayerStatsTeamId(e.target.value)}>
               <option value="">Select team…</option>
-              <option value="all">🌍 All Teams</option>
               {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
-          <button onClick={loadPlayerStats} disabled={playerStatsLoading || !playerStatsTeamId} className={btnPrimary}>
+          <button onClick={loadPlayerStats} disabled={playerStatsLoading || !playerStatsTeamId || playerStatsTeamId === "all"} className={btnPrimary}>
             {playerStatsLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BarChart2 className="w-4 h-4" />}
-            {playerStatsLoading ? `${playerStatsProgress || "Loading…"}` : "Generate & Load Player Stats"}
+            {playerStatsLoading ? "Loading…" : "Load Single Team"}
           </button>
           <StatusBadge status={playerStatsStatus} message={playerStatsMsg} />
         </Section>
