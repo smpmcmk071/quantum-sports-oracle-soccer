@@ -142,6 +142,13 @@ export default function Admin() {
   const [clearStatus, setClearStatus] = useState(null);
   const [clearMsg, setClearMsg] = useState("");
 
+  // Roster loader
+  const [rosterTeamId, setRosterTeamId] = useState("");
+  const [rosterStatus, setRosterStatus] = useState(null);
+  const [rosterMsg, setRosterMsg] = useState("");
+  const [rosterLoading, setRosterLoading] = useState(false);
+  const [rosterProgress, setRosterProgress] = useState("");
+
   // Team stats
   const [statsTeamId, setStatsTeamId] = useState("");
   const [statsForm, setStatsForm] = useState({ wins: 0, losses: 0, draws: 0, goals_for: 0, goals_against: 0, goal_differential: 0 });
