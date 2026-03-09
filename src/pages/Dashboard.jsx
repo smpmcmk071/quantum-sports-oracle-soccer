@@ -163,6 +163,9 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* MLS News */}
+        <MLSNews />
+
         {/* Top Teams Leaderboard */}
         {teamStats.length > 0 && (
           <div>
