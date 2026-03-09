@@ -9,6 +9,7 @@ const navItems = [
   { label: "Matches", page: "Matches", icon: Calendar },
   { label: "Predictions", page: "Predictions", icon: TrendingUp },
   { label: "Standings", page: "Standings", icon: Trophy },
+  { label: "Stats Grid", page: "TeamStats", icon: TrendingUp },
 ];
 
 export default function Layout({ children, currentPageName }) {
