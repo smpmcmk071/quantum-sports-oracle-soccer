@@ -16,6 +16,72 @@ function StatusBadge({ status }) {
   );
 }
 
+// Extracted into its own component so hooks are valid
+function MatchRow({ g, teamMap, updating, onMarkResult }) {
+  const home = teamMap[g.home_team_id];
+  const away = teamMap[g.away_team_id];
+  const [hs, setHs] = useState(g.home_score ?? "");
+  const [as_, setAs] = useState(g.away_score ?? "");
+
+  return (
+    <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 hover:bg-white/[0.05] transition-all">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 text-right">
+          <div className="font-semibold text-sm text-white">{home?.name || "TBD"}</div>
+          <div className="text-xs text-white/30">{home?.city}</div>
+        </div>
+
+        <div className="text-center shrink-0">
+          {g.status === "completed" ? (
+            <div className="text-2xl font-bold text-white">{g.home_score} – {g.away_score}</div>
+          ) : (
+            <div>
+              <div className="text-xs font-bold text-white/60">{g.game_date}</div>
+              <div className="text-xs text-white/30">{g.game_time || "TBD"}</div>
+            </div>
+          )}
+          <div className="mt-1"><StatusBadge status={g.status} /></div>
+        </div>
+
+        <div className="flex-1 text-left">
+          <div className="font-semibold text-sm text-white">{away?.name || "TBD"}</div>
+          <div className="text-xs text-white/30">{away?.city}</div>
+        </div>
+      </div>
+
+      {g.venue && (
+        <div className="text-center text-xs text-white/20 mt-2">{g.venue}</div>
+      )}
+
+      {g.status !== "completed" && (
+        <div className="mt-3 flex items-center gap-2 justify-center">
+          <input
+            type="number" min="0" max="20"
+            className="w-16 bg-white/[0.05] border border-white/10 rounded-lg px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-violet-500/50"
+            value={hs} onChange={e => setHs(e.target.value)}
+            placeholder="0"
+          />
+          <span className="text-white/30 text-xs">–</span>
+          <input
+            type="number" min="0" max="20"
+            className="w-16 bg-white/[0.05] border border-white/10 rounded-lg px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-violet-500/50"
+            value={as_} onChange={e => setAs(e.target.value)}
+            placeholder="0"
+          />
+          <button
+            onClick={() => onMarkResult(g, Number(hs), Number(as_))}
+            disabled={hs === "" || as_ === "" || updating === g.id}
+            className="flex items-center gap-1 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium rounded-lg transition-colors disabled:opacity-40"
+          >
+            <CheckCircle className="w-3.5 h-3.5" />
+            Save Result
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Matches() {
   const [games, setGames] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -49,13 +115,12 @@ export default function Matches() {
     <div className="min-h-screen bg-[#080b14] text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Calendar className="w-5 h-5 text-violet-400" />
             <h1 className="text-xl font-bold">MLS Matches</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Filter className="w-4 h-4 text-white/30" />
             {["all", "scheduled", "in_progress", "completed"].map(s => (
               <button
@@ -78,74 +143,9 @@ export default function Matches() {
           </div>
         ) : (
           <div className="space-y-3">
-            {filtered.map(g => {
-              const home = teamMap[g.home_team_id];
-              const away = teamMap[g.away_team_id];
-              const [hs, setHs] = useState(g.home_score ?? "");
-              const [as_, setAs] = useState(g.away_score ?? "");
-
-              return (
-                <div key={g.id} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 hover:bg-white/[0.05] transition-all">
-                  <div className="flex items-center justify-between gap-4">
-                    {/* Home */}
-                    <div className="flex-1 text-right">
-                      <div className="font-semibold text-sm text-white">{home?.name || "TBD"}</div>
-                      <div className="text-xs text-white/30">{home?.city}</div>
-                    </div>
-
-                    {/* Score / Date */}
-                    <div className="text-center shrink-0">
-                      {g.status === "completed" ? (
-                        <div className="text-2xl font-bold text-white">{g.home_score} – {g.away_score}</div>
-                      ) : (
-                        <div>
-                          <div className="text-xs font-bold text-white/60">{g.game_date}</div>
-                          <div className="text-xs text-white/30">{g.game_time || "TBD"}</div>
-                        </div>
-                      )}
-                      <div className="mt-1"><StatusBadge status={g.status} /></div>
-                    </div>
-
-                    {/* Away */}
-                    <div className="flex-1 text-left">
-                      <div className="font-semibold text-sm text-white">{away?.name || "TBD"}</div>
-                      <div className="text-xs text-white/30">{away?.city}</div>
-                    </div>
-                  </div>
-
-                  {g.venue && (
-                    <div className="text-center text-xs text-white/20 mt-2">{g.venue}</div>
-                  )}
-
-                  {/* Enter result (for scheduled/in-progress) */}
-                  {g.status !== "completed" && (
-                    <div className="mt-3 flex items-center gap-2 justify-center">
-                      <input
-                        type="number" min="0" max="20"
-                        className="w-16 bg-white/[0.05] border border-white/10 rounded-lg px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-violet-500/50"
-                        value={hs} onChange={e => setHs(e.target.value)}
-                        placeholder="0"
-                      />
-                      <span className="text-white/30 text-xs">–</span>
-                      <input
-                        type="number" min="0" max="20"
-                        className="w-16 bg-white/[0.05] border border-white/10 rounded-lg px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-violet-500/50"
-                        value={as_} onChange={e => setAs(e.target.value)}
-                        placeholder="0"
-                      />
-                      <button
-                        onClick={() => markResult(g, Number(hs), Number(as_))}
-                        disabled={hs === "" || as_ === "" || updating === g.id}
-                        className="flex items-center gap-1 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium rounded-lg transition-colors disabled:opacity-40"
-                      >
-                        <CheckCircle className="w-3.5 h-3.5" />
-                        Save Result
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {filtered.map(g => (
+              <MatchRow key={g.id} g={g} teamMap={teamMap} updating={updating} onMarkResult={markResult} />
+            ))}
           </div>
         )}
       </div>
