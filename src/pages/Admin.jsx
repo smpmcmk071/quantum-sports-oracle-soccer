@@ -376,12 +376,13 @@ Mark the top 11 starters as is_starter: true.`,
           setPlayerStatsProgress(`Team ${i + 1}/${validTeams.length}: ${team.name} - Batch ${batchNum}/${totalBatches}…`);
           
           const playerList = batch.map(p => ({ id: p.id, name: p.name, position: p.position }));
+          const playerNameMap = batch.reduce((acc, p) => { acc[p.name.toLowerCase()] = p.id; return acc; }, {});
 
           const result = await base44.integrations.Core.InvokeLLM({
             prompt: `Generate realistic 2026 MLS season stats (through ~matchday 5) for these ${team.name} players:
 ${playerList.map(p => `${p.name} (${p.position})`).join(", ")}
 
-For each player provide: goals, assists, appearances (0-5), starts, minutes_played, shots_per_game, pass_accuracy (0-100), tackles_per_game, yellow_cards (0-2), rating (6.0-8.5).
+For each player provide: name, goals, assists, appearances (0-5), starts, minutes_played, shots_per_game, pass_accuracy (0-100), tackles_per_game, yellow_cards (0-2), rating (6.0-8.5).
 For GK only: clean_sheets, saves_per_game.
 Keep realistic for early season.`,
             response_json_schema: {
@@ -392,7 +393,7 @@ Keep realistic for early season.`,
                   items: {
                     type: "object",
                     properties: {
-                      player_id: { type: "string" },
+                      name: { type: "string" },
                       goals: { type: "number" },
                       assists: { type: "number" },
                       appearances: { type: "number" },
@@ -412,28 +413,31 @@ Keep realistic for early season.`,
             }
           });
 
-          const statsToCreate = (result.stats || []).map(s => ({
-            player_id: s.player_id,
-            team_id: team.id,
-            season: 2026,
-            league: "MLS",
-            goals: s.goals || 0,
-            assists: s.assists || 0,
-            appearances: s.appearances || 0,
-            starts: s.starts || 0,
-            minutes_played: s.minutes_played || 0,
-            shots_per_game: s.shots_per_game || 0,
-            pass_accuracy: s.pass_accuracy || 0,
-            tackles_per_game: s.tackles_per_game || 0,
-            yellow_cards: s.yellow_cards || 0,
-            clean_sheets: s.clean_sheets || 0,
-            saves_per_game: s.saves_per_game || 0,
-            rating: s.rating || 7.0,
-          }));
+          const statsToCreate = (result.stats || []).map(s => {
+            const playerId = playerNameMap[s.name.toLowerCase()];
+            return {
+              player_id: playerId,
+              team_id: team.id,
+              season: 2026,
+              league: "MLS",
+              goals: s.goals || 0,
+              assists: s.assists || 0,
+              appearances: s.appearances || 0,
+              starts: s.starts || 0,
+              minutes_played: s.minutes_played || 0,
+              shots_per_game: s.shots_per_game || 0,
+              pass_accuracy: s.pass_accuracy || 0,
+              tackles_per_game: s.tackles_per_game || 0,
+              yellow_cards: s.yellow_cards || 0,
+              clean_sheets: s.clean_sheets || 0,
+              saves_per_game: s.saves_per_game || 0,
+              rating: s.rating || 7.0,
+            };
+          }).filter(s => s.player_id); // Only keep stats with valid player IDs
 
           if (statsToCreate.length > 0) {
             await base44.entities.PlayerStats.bulkCreate(statsToCreate);
-            await Promise.all((result.stats || []).map(s =>
+            await Promise.all(statsToCreate.map(s =>
               base44.entities.Player.update(s.player_id, {
                 goals: s.goals || 0,
                 assists: s.assists || 0,
