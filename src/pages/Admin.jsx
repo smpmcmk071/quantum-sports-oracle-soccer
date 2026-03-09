@@ -586,8 +586,27 @@ Keep stats realistic for early season (5 games played max).`,
           <StatusBadge status={rosterStatus} message={rosterMsg} />
         </Section>
 
-        {/* 5. Add Single Player */}
-        <Section title="5. Add MLS Player Manually" icon={Users}>
+        {/* 5. Load Player Stats via AI */}
+        <Section title="5. Load Player Stats (AI)" icon={BarChart2}>
+          <p className="text-sm text-white/40 mb-4">
+            Select a team to generate realistic 2026 season stats for all their loaded players. Requires roster to be loaded first.
+          </p>
+          <div className="mb-4">
+            <label className={labelCls}>Team *</label>
+            <select className={selectCls} value={playerStatsTeamId} onChange={e => setPlayerStatsTeamId(e.target.value)}>
+              <option value="">Select team…</option>
+              {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+          </div>
+          <button onClick={loadPlayerStats} disabled={playerStatsLoading || !playerStatsTeamId} className={btnPrimary}>
+            {playerStatsLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BarChart2 className="w-4 h-4" />}
+            {playerStatsLoading ? `${playerStatsProgress || "Loading…"}` : "Generate & Load Player Stats"}
+          </button>
+          <StatusBadge status={playerStatsStatus} message={playerStatsMsg} />
+        </Section>
+
+        {/* 6. Add Single Player */}
+        <Section title="6. Add MLS Player Manually" icon={Users}>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="col-span-2">
               <label className={labelCls}>Full Name *</label>
