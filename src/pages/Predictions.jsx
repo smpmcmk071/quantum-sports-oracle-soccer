@@ -18,6 +18,9 @@ export default function Predictions() {
   const [generating, setGenerating] = useState(null);
   const [selectedGame, setSelectedGame] = useState("");
 
+  const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
+  const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
+
   useEffect(() => {
     Promise.all([
       base44.entities.Prediction.filter({ is_archived: false }, "-created_date", 50),
