@@ -106,6 +106,7 @@ Use ALL available data — team form, goals scored/conceded, player zodiac signs
       numerology_score: result.numerology_score,
       astrology_score: result.astrology_score,
       cosmic_energy_score: result.cosmic_energy_score,
+      battle_stats_score: result.battle_stats_score,
       predicted_score_diff: result.predicted_score_diff,
       bet_recommendation: result.bet_recommendation,
       prediction_notes: result.prediction_notes,
