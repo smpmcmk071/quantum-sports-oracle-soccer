@@ -224,6 +224,53 @@ Deno.serve(async (req) => {
       });
     }
 
+    // ── JERSEY NUMBERS: fetch rosters from ESPN and update players ──────────
+    if (type === "jerseys") {
+      let updated = 0;
+      let skipped = 0;
+
+      for (const team of teams) {
+        if (!team.espn_id) { skipped++; continue; }
+
+        const rosterUrl = `${ESPN_BASE}/teams/${team.espn_id}/roster`;
+        const rRes = await fetch(rosterUrl);
+        if (!rRes.ok) { skipped++; continue; }
+        const rData = await rRes.json();
+
+        const athletes = rData.athletes || [];
+        // ESPN may nest by position group: [{items: [...]}] or flat array
+        const flatAthletes = athletes.length && athletes[0]?.items
+          ? athletes.flatMap(g => g.items || [])
+          : athletes;
+
+        // Load players for this team from DB
+        const dbPlayers = await base44.asServiceRole.entities.Player.filter({ team_id: team.id });
+        const nameMap = dbPlayers.reduce((acc, p) => { acc[p.name.toLowerCase()] = p; return acc; }, {});
+
+        for (const athlete of flatAthletes) {
+          const jerseyNum = athlete.jersey ? parseInt(athlete.jersey, 10) : null;
+          const espnId = athlete.id ? String(athlete.id) : null;
+          const fullName = athlete.fullName || athlete.displayName || "";
+          if (!jerseyNum && !espnId) continue;
+
+          // Try to match by espn_id first, then by name
+          let dbPlayer = dbPlayers.find(p => p.espn_id && p.espn_id === espnId);
+          if (!dbPlayer) dbPlayer = nameMap[fullName.toLowerCase()];
+          if (!dbPlayer) continue;
+
+          const updatePayload = {};
+          if (jerseyNum && dbPlayer.jersey_number !== jerseyNum) updatePayload.jersey_number = jerseyNum;
+          if (espnId && dbPlayer.espn_id !== espnId) updatePayload.espn_id = espnId;
+          if (Object.keys(updatePayload).length > 0) {
+            await base44.asServiceRole.entities.Player.update(dbPlayer.id, updatePayload);
+            updated++;
+          }
+        }
+      }
+
+      return Response.json({ success: true, players_updated: updated, teams_skipped: skipped });
+    }
+
     return Response.json({ error: "Unknown type" }, { status: 400 });
 
   } catch (error) {
