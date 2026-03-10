@@ -17,7 +17,7 @@ function StatusBadge({ status }) {
 }
 
 // Extracted into its own component so hooks are valid
-function MatchRow({ g, teamMap, updating, onMarkResult }) {
+function MatchRow({ g, teamMap, updating, onMarkResult, onDelete }) {
   const home = teamMap[g.home_team_id];
   const away = teamMap[g.away_team_id];
   const [hs, setHs] = useState(g.home_score ?? "");
