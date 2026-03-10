@@ -138,6 +138,11 @@ export default function Admin() {
   const [fetchMsg, setFetchMsg] = useState("");
   const [fetchLoading, setFetchLoading] = useState(false);
 
+  // Sync scores
+  const [syncStatus, setSyncStatus] = useState(null);
+  const [syncMsg, setSyncMsg] = useState("");
+  const [syncLoading, setSyncLoading] = useState(false);
+
   // Clear data
   const [clearStatus, setClearStatus] = useState(null);
   const [clearMsg, setClearMsg] = useState("");
