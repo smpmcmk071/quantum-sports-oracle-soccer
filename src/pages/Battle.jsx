@@ -295,7 +295,215 @@ export default function Battle() {
           </div>
         )}
 
+        {/* ── Player Prop Duel ── */}
+        <PropDuel team1Id={team1Id} team2Id={team2Id} team1={team1} team2={team2} />
+
       </div>
+    </div>
+  );
+}
+
+// ── Player Prop Duel Component ─────────────────────────────────────────────
+function PropDuel({ team1Id, team2Id, team1, team2 }) {
+  const [players1, setPlayers1] = useState([]);
+  const [players2, setPlayers2] = useState([]);
+  const [p1Id, setP1Id] = useState("");
+  const [p2Id, setP2Id] = useState("");
+  const [duelResult, setDuelResult] = useState(null);
+  const [duelAnimStep, setDuelAnimStep] = useState(0);
+  const [duelRunning, setDuelRunning] = useState(false);
+  const [duelLog, setDuelLog] = useState([]);
+
+  useEffect(() => {
+    setP1Id(""); setDuelResult(null); setDuelLog([]);
+    if (team1Id) base44.entities.Player.filter({ team_id: team1Id }).then(setPlayers1);
+    else setPlayers1([]);
+  }, [team1Id]);
+
+  useEffect(() => {
+    setP2Id(""); setDuelResult(null); setDuelLog([]);
+    if (team2Id) base44.entities.Player.filter({ team_id: team2Id }).then(setPlayers2);
+    else setPlayers2([]);
+  }, [team2Id]);
+
+  function runPropDuel() {
+    const p1 = players1.find(p => p.id === p1Id);
+    const p2 = players2.find(p => p.id === p2Id);
+    if (!p1 || !p2) return;
+    setDuelRunning(true);
+    setDuelResult(null);
+    setDuelAnimStep(0);
+
+    const s1 = calcBattleStats(p1);
+    const s2 = calcBattleStats(p2);
+    const compat = zodiacCompatibility(p1.zodiac_sign, p2.zodiac_sign);
+    let hp1 = 100, hp2 = 100;
+    const log = [];
+    let turn = 0;
+    while (hp1 > 0 && hp2 > 0 && turn < 20) {
+      turn++;
+      const dmg1 = Math.max(1, Math.round(((s1.attack / 100) * (0.8 + Math.random() * 0.4) * compat - (s2.defense / 100) * 0.5) * 15));
+      hp2 = Math.max(0, hp2 - dmg1);
+      log.push({ turn, attacker: p1.name, defender: p2.name, damage: dmg1, hp1: Math.round(hp1), hp2: Math.round(hp2), side: "p1" });
+      if (hp2 <= 0) break;
+      const dmg2 = Math.max(1, Math.round(((s2.attack / 100) * (0.8 + Math.random() * 0.4) / compat - (s1.defense / 100) * 0.5) * 15));
+      hp1 = Math.max(0, hp1 - dmg2);
+      log.push({ turn, attacker: p2.name, defender: p1.name, damage: dmg2, hp1: Math.round(hp1), hp2: Math.round(hp2), side: "p2" });
+    }
+    const winner = hp1 >= hp2 ? p1 : p2;
+    const res = { winner, stats1: s1, stats2: s2, finalHp1: Math.round(hp1), finalHp2: Math.round(hp2), log, p1, p2 };
+    setDuelLog(log);
+    setDuelResult(res);
+    let step = 0;
+    const iv = setInterval(() => {
+      step++;
+      setDuelAnimStep(step);
+      if (step >= log.length) { clearInterval(iv); setDuelRunning(false); }
+    }, 280);
+  }
+
+  const p1 = players1.find(p => p.id === p1Id);
+  const p2 = players2.find(p => p.id === p2Id);
+  const selectCls = "w-full bg-[#12172a] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500/50 transition-colors";
+  const visibleLog = duelLog.slice(0, duelAnimStep);
+  const duelDone = duelResult && duelAnimStep >= duelLog.length;
+  const lastEntry = visibleLog[visibleLog.length - 1];
+  const curHp1 = lastEntry ? lastEntry.hp1 : 100;
+  const curHp2 = lastEntry ? lastEntry.hp2 : 100;
+
+  return (
+    <div className="mt-10 border-t border-white/[0.06] pt-8">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+          <Star className="w-4 h-4 text-white" />
+        </div>
+        <div>
+          <h2 className="text-base font-bold">Player Prop Duel</h2>
+          <p className="text-xs text-white/30">1v1 — GK saves, top scorers, key matchups for prop bets</p>
+        </div>
+      </div>
+
+      {(!team1Id || !team2Id) && (
+        <p className="text-xs text-white/30 italic mb-4">Select both teams above to enable player prop duels.</p>
+      )}
+
+      {/* Player Selectors */}
+      <div className="grid sm:grid-cols-2 gap-4 mb-5">
+        <div className="bg-white/[0.03] border border-amber-500/20 rounded-2xl p-4">
+          <div className="text-xs text-amber-300 font-semibold mb-2">{team1?.name || "Team 1"} Player</div>
+          <select className={selectCls} value={p1Id} onChange={e => { setP1Id(e.target.value); setDuelResult(null); setDuelLog([]); }} disabled={!team1Id}>
+            <option value="">Select player…</option>
+            {players1.map(p => <option key={p.id} value={p.id}>{p.name} ({p.position})</option>)}
+          </select>
+          {p1 && (
+            <div className="mt-3 text-xs text-white/40 space-y-0.5">
+              <div>Zodiac: <span className="text-white/60">{p1.zodiac_sign || "?"}</span> · LP: <span className="text-white/60">{p1.life_path_number || "?"}</span></div>
+              <div>Goals: <span className="text-amber-400 font-bold">{p1.goals || 0}</span> · Assists: <span className="text-amber-400 font-bold">{p1.assists || 0}</span></div>
+              {p1.position === "GK" && <div>Saves/g: <span className="text-cyan-400 font-bold">{p1.saves_per_game || 0}</span></div>}
+              <div className="mt-2 flex justify-between">
+                {Object.entries(calcBattleStats(p1)).map(([k, v]) => (
+                  <div key={k} className="text-center">
+                    <div className="text-white font-bold">{v}</div>
+                    <div className="text-white/20 capitalize">{k.slice(0,3)}</div>
+                  </div>
+                ))}
+              </div>
+              {/* HP bar */}
+              {duelResult && (
+                <div className="mt-2">
+                  <div className="flex justify-between text-xs mb-1"><span className="text-white/30">HP</span><span className="font-bold text-amber-400">{curHp1}</span></div>
+                  <div className="w-full bg-white/10 rounded-full h-1.5">
+                    <div className={`h-1.5 rounded-full transition-all duration-500 ${curHp1 > 60 ? "bg-emerald-400" : curHp1 > 30 ? "bg-amber-400" : "bg-rose-400"}`} style={{ width: `${curHp1}%` }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white/[0.03] border border-orange-500/20 rounded-2xl p-4">
+          <div className="text-xs text-orange-300 font-semibold mb-2">{team2?.name || "Team 2"} Player</div>
+          <select className={selectCls} value={p2Id} onChange={e => { setP2Id(e.target.value); setDuelResult(null); setDuelLog([]); }} disabled={!team2Id}>
+            <option value="">Select player…</option>
+            {players2.map(p => <option key={p.id} value={p.id}>{p.name} ({p.position})</option>)}
+          </select>
+          {p2 && (
+            <div className="mt-3 text-xs text-white/40 space-y-0.5">
+              <div>Zodiac: <span className="text-white/60">{p2.zodiac_sign || "?"}</span> · LP: <span className="text-white/60">{p2.life_path_number || "?"}</span></div>
+              <div>Goals: <span className="text-orange-400 font-bold">{p2.goals || 0}</span> · Assists: <span className="text-orange-400 font-bold">{p2.assists || 0}</span></div>
+              {p2.position === "GK" && <div>Saves/g: <span className="text-cyan-400 font-bold">{p2.saves_per_game || 0}</span></div>}
+              <div className="mt-2 flex justify-between">
+                {Object.entries(calcBattleStats(p2)).map(([k, v]) => (
+                  <div key={k} className="text-center">
+                    <div className="text-white font-bold">{v}</div>
+                    <div className="text-white/20 capitalize">{k.slice(0,3)}</div>
+                  </div>
+                ))}
+              </div>
+              {duelResult && (
+                <div className="mt-2">
+                  <div className="flex justify-between text-xs mb-1"><span className="text-white/30">HP</span><span className="font-bold text-orange-400">{curHp2}</span></div>
+                  <div className="w-full bg-white/10 rounded-full h-1.5">
+                    <div className={`h-1.5 rounded-full transition-all duration-500 ${curHp2 > 60 ? "bg-emerald-400" : curHp2 > 30 ? "bg-amber-400" : "bg-rose-400"}`} style={{ width: `${curHp2}%` }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Duel Button */}
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={runPropDuel}
+          disabled={!p1Id || !p2Id || duelRunning}
+          className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-2xl text-sm flex items-center gap-2 disabled:opacity-40 hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg shadow-amber-500/20"
+        >
+          {duelRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Swords className="w-4 h-4" />}
+          {duelRunning ? "Dueling…" : "⚡ Start Prop Duel"}
+        </button>
+      </div>
+
+      {/* Duel Log */}
+      {visibleLog.length > 0 && (
+        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 mb-5">
+          <div className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">⚔ Duel Log</div>
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {visibleLog.map((entry, i) => (
+              <div key={i} className={`text-xs flex items-center gap-2 py-1 px-2 rounded-lg ${entry.side === "p1" ? "bg-amber-500/5" : "bg-orange-500/5"}`}>
+                <span className={`font-bold ${entry.side === "p1" ? "text-amber-400" : "text-orange-400"}`}>{entry.attacker}</span>
+                <ChevronRight className="w-3 h-3 text-white/20" />
+                <span className="text-white/40">deals</span>
+                <span className="font-bold text-white">{entry.damage} dmg</span>
+                <span className="text-white/30 ml-auto">HP left: {entry.side === "p1" ? entry.hp2 : entry.hp1}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Duel Winner */}
+      {duelDone && (
+        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-5 text-center">
+          <Star className="w-7 h-7 text-amber-400 mx-auto mb-2" />
+          <div className="text-xl font-bold text-white mb-1">🏆 {duelResult.winner.name} Wins!</div>
+          <div className="text-xs text-white/40 mb-2">
+            {duelResult.winner.zodiac_sign} · Life Path {duelResult.winner.life_path_number} · {duelLog.length} turns
+          </div>
+          <div className="flex justify-center gap-6 text-sm mb-3">
+            <div><span className="text-amber-400 font-bold">{duelResult.finalHp1}</span><span className="text-white/30 ml-1">HP ({p1?.name})</span></div>
+            <div><span className="text-orange-400 font-bold">{duelResult.finalHp2}</span><span className="text-white/30 ml-1">HP ({p2?.name})</span></div>
+          </div>
+          <div className="text-xs text-white/30 bg-white/5 rounded-xl px-4 py-2 inline-block">
+            💡 Prop insight: <span className="text-white/60">{duelResult.winner.name} numerologically favored — consider betting on their performance props</span>
+          </div>
+          <div className="mt-3">
+            <button onClick={() => { setDuelResult(null); setDuelLog([]); setDuelAnimStep(0); }} className="text-xs text-white/30 hover:text-white/60 underline">Reset Duel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
