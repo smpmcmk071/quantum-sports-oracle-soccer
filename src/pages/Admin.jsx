@@ -614,8 +614,20 @@ Keep realistic for early season.`,
           <StatusBadge status={teamsStatus} message={teamsMsg} />
         </Section>
 
-        {/* 2. Fetch Schedule from ESPN */}
-        <Section title="2. Fetch MLS Schedule from ESPN" icon={Calendar}>
+        {/* 2. Sync Scores from ESPN */}
+        <Section title="2. Sync Scores & Standings from ESPN" icon={RefreshCw} defaultOpen={true}>
+          <p className="text-sm text-white/40 mb-4">
+            Fetches all completed 2026 MLS results from ESPN, updates game scores, and automatically recalculates every team's W/L/D record and standings points.
+          </p>
+          <button onClick={syncScoresFromESPN} disabled={syncLoading} className={btnPrimary}>
+            {syncLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+            {syncLoading ? "Syncing…" : "Sync Scores & Recalculate Standings"}
+          </button>
+          <StatusBadge status={syncStatus} message={syncMsg} />
+        </Section>
+
+        {/* 3. Fetch Schedule from ESPN */}
+        <Section title="3. Fetch MLS Schedule from ESPN" icon={Calendar}>
           <p className="text-sm text-white/40 mb-4">
             Fetches upcoming 2026 MLS matches automatically via the ESPN API backend function.
             Requires the <code className="text-violet-400 text-xs bg-violet-400/10 px-1 rounded">fetchMLSData</code> backend function to be deployed.
