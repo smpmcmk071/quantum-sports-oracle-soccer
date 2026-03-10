@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
         const gameTime = event.date?.split("T")[1]?.substring(0, 5);
         const venue = competition.venue?.fullName || "";
         const statusType = event.status?.type?.name || "STATUS_SCHEDULED";
-        const status = statusType === "STATUS_FINAL" ? "completed"
+        const status = ["STATUS_FINAL","STATUS_FULL_TIME","STATUS_FT"].includes(statusType) ? "completed"
           : statusType === "STATUS_IN_PROGRESS" ? "in_progress"
           : "scheduled";
 
