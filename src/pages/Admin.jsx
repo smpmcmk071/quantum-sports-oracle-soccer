@@ -161,6 +161,11 @@ export default function Admin() {
   const [playerStatsLoading, setPlayerStatsLoading] = useState(false);
   const [playerStatsProgress, setPlayerStatsProgress] = useState("");
 
+  // Jersey numbers
+  const [jerseyLoading, setJerseyLoading] = useState(false);
+  const [jerseyStatus, setJerseyStatus] = useState(null);
+  const [jerseyMsg, setJerseyMsg] = useState("");
+
   // Team stats
   const [statsTeamId, setStatsTeamId] = useState("");
   const [statsForm, setStatsForm] = useState({ wins: 0, losses: 0, draws: 0, goals_for: 0, goals_against: 0, goal_differential: 0 });
