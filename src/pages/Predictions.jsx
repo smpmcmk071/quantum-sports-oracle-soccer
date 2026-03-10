@@ -84,6 +84,7 @@ Use ALL available data — team form, goals scored/conceded, player zodiac signs
           numerology_score: { type: "number", description: "0-100 numerology score for home team" },
           astrology_score: { type: "number", description: "0-100 astrology score for home team" },
           cosmic_energy_score: { type: "number", description: "0-100 cosmic energy alignment" },
+          battle_stats_score: { type: "number", description: "0-100 score based on team/player stats comparison" },
           predicted_score_diff: { type: "number", description: "Predicted goal differential (positive = home wins)" },
           bet_recommendation: { type: "string", enum: ["strong_bet", "moderate_bet", "light_bet", "no_bet"] },
           prediction_notes: { type: "string", description: "2-3 sentence explanation" },
