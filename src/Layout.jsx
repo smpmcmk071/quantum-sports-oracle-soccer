@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Zap, LayoutDashboard, Calendar, Database, TrendingUp, Trophy } from "lucide-react";
+import { Zap, LayoutDashboard, Calendar, Database, TrendingUp, Trophy, Swords } from "lucide-react";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 
