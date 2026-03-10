@@ -117,6 +117,12 @@ export default function Matches() {
     setSyncing(false);
   }
 
+  async function deleteGame(gameId) {
+    if (!window.confirm("Delete this match?")) return;
+    await base44.entities.Game.delete(gameId);
+    setGames(prev => prev.filter(g => g.id !== gameId));
+  }
+
   async function markResult(game, homeScore, awayScore) {
     setUpdating(game.id);
     const winner = homeScore > awayScore ? game.home_team_id : awayScore > homeScore ? game.away_team_id : "draw";
