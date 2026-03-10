@@ -106,15 +106,26 @@ export default function Dashboard() {
                   const away = teamMap[g.away_team_id];
                   return (
                     <div key={g.id} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 hover:bg-white/[0.05] transition-all">
-                      <div className="flex items-center justify-between">
-                        <div>
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm text-white">
                             {home?.name || "TBD"} <span className="text-white/30">vs</span> {away?.name || "TBD"}
                           </div>
                           <div className="text-xs text-white/30 mt-0.5">{g.game_date} · {g.game_time || "TBD"}</div>
                           {g.venue && <div className="text-xs text-white/20 mt-0.5">{g.venue}</div>}
                         </div>
-                        <span className="text-[10px] bg-emerald-400/10 text-emerald-400 rounded-full px-2 py-0.5 font-medium">MLS</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] bg-emerald-400/10 text-emerald-400 rounded-full px-2 py-0.5 font-medium">MLS</span>
+                          {home && away && (
+                            <Link
+                              to={createPageUrl(`Battle?homeTeamId=${g.home_team_id}&awayTeamId=${g.away_team_id}&venue=${encodeURIComponent(g.venue||"")}&gameDate=${g.game_date}`)}
+                              className="flex items-center gap-1 px-2.5 py-1 bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 rounded-full text-[10px] font-semibold transition-colors"
+                            >
+                              <Swords className="w-3 h-3" />
+                              Battle
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
