@@ -256,6 +256,21 @@ export default function Admin() {
     setGameForm({ home_team_id: "", away_team_id: "", game_date: "", game_time: "", venue: "", matchday: "", season: 2026 });
   }
 
+  async function syncScoresFromESPN() {
+    setSyncLoading(true);
+    setSyncStatus(null);
+    try {
+      const res = await base44.functions.invoke("fetchMLSData", { type: "scores", season: 2026 });
+      const d = res?.data;
+      setSyncStatus("success");
+      setSyncMsg(`✓ Games updated: ${d?.games_updated || 0}, new: ${d?.games_created || 0}. Team standings recalculated for ${d?.team_stats_updated || 0} teams.`);
+    } catch (e) {
+      setSyncStatus("error");
+      setSyncMsg("Sync failed: " + (e?.response?.data?.error || e.message));
+    }
+    setSyncLoading(false);
+  }
+
   async function fetchMLSSchedule() {
     setFetchLoading(true);
     setFetchStatus(null);
