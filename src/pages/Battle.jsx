@@ -258,7 +258,6 @@ export default function Battle() {
     if (!id) return;
     setLoadingPlayers(true);
     const players = await base44.entities.Player.filter({ team_id: id, is_starter: true });
-    // Fall back to all players if no starters flagged
     const list = players.length > 0 ? players : await base44.entities.Player.filter({ team_id: id });
     if (teamNum === 1) setTeam1Players(list.slice(0, 11));
     else setTeam2Players(list.slice(0, 11));
