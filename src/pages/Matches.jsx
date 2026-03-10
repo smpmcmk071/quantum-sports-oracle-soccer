@@ -105,6 +105,18 @@ export default function Matches() {
   const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
   const filtered = filter === "all" ? games : games.filter(g => g.status === filter);
 
+  async function syncScores() {
+    setSyncing(true);
+    setSyncMsg("");
+    const res = await base44.functions.invoke("fetchMLSData", { type: "scores", season: 2026 });
+    const d = res?.data;
+    setSyncMsg(`✓ Updated ${d?.games_updated || 0} results`);
+    // Refresh games
+    const updated = await base44.entities.Game.list("-game_date", 100);
+    setGames(updated);
+    setSyncing(false);
+  }
+
   async function markResult(game, homeScore, awayScore) {
     setUpdating(game.id);
     const winner = homeScore > awayScore ? game.home_team_id : awayScore > homeScore ? game.away_team_id : "draw";
