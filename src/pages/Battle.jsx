@@ -308,7 +308,7 @@ export default function Battle() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center">
             <Swords className="w-5 h-5 text-white" />
           </div>
@@ -317,6 +317,26 @@ export default function Battle() {
             <p className="text-xs text-white/30">Starting XI vs Starting XI — numerology & stats-powered matchups</p>
           </div>
         </div>
+
+        {/* Match Context Banner */}
+        {(matchVenue || matchDate) && (
+          <div className="bg-white/[0.03] border border-violet-500/20 rounded-2xl px-4 py-3 mb-6 flex flex-wrap items-center gap-4">
+            {matchDate && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-white/30">📅 Date:</span>
+                <span className="text-white font-semibold">{matchDate}</span>
+                <span className="text-violet-300 text-xs">({getDateZodiac(matchDate)} · Universal #{getDateUniversalNumber(matchDate)})</span>
+              </div>
+            )}
+            {matchVenue && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-white/30">🏟 Venue:</span>
+                <span className="text-white font-semibold">{matchVenue}</span>
+                <span className="text-cyan-300 text-xs">(Numerology #{calcVenueNumerology(matchVenue)})</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Team Selection */}
         <div className="grid sm:grid-cols-2 gap-4 mb-6">
