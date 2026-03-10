@@ -72,7 +72,8 @@ Deno.serve(async (req) => {
       const events = data.events || [];
 
       // Only care about completed games
-      const completedEvents = events.filter(e => e.status?.type?.name === "STATUS_FINAL");
+      const COMPLETED_STATUSES = ["STATUS_FINAL", "STATUS_FULL_TIME", "STATUS_FT"];
+      const completedEvents = events.filter(e => COMPLETED_STATUSES.includes(e.status?.type?.name));
 
       // Load existing games from DB
       const dbGames = await base44.asServiceRole.entities.Game.list();
