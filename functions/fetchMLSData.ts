@@ -113,8 +113,8 @@ Deno.serve(async (req) => {
         const existingGame = dbGameMap[gameKey(homeId, awayId, gameDate)];
 
         if (existingGame) {
-          // Update with scores if not already done
-          if (existingGame.status !== "completed") {
+          // Update if not completed OR if scores are missing
+          if (existingGame.status !== "completed" || existingGame.home_score == null || existingGame.away_score == null) {
             await base44.asServiceRole.entities.Game.update(existingGame.id, {
               status: "completed",
               home_score: homeScore,
