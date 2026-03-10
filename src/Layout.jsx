@@ -10,6 +10,7 @@ const navItems = [
   { label: "Predictions", page: "Predictions", icon: TrendingUp },
   { label: "Standings", page: "Standings", icon: Trophy },
   { label: "Stats Grid", page: "TeamStats", icon: TrendingUp },
+  { label: "Battle", page: "Battle", icon: Swords },
 ];
 
 export default function Layout({ children, currentPageName }) {
