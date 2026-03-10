@@ -49,9 +49,15 @@ function MatchRow({ g, teamMap, updating, onMarkResult, onDelete }) {
         </div>
       </div>
 
-      {g.venue && (
-        <div className="text-center text-xs text-white/20 mt-2">{g.venue}</div>
-      )}
+      <div className="flex items-center justify-between mt-2">
+        {g.venue ? <div className="text-xs text-white/20">{g.venue}</div> : <div />}
+        <button
+          onClick={() => onDelete(g.id)}
+          className="flex items-center gap-1 px-2 py-1 text-rose-400/50 hover:text-rose-400 hover:bg-rose-400/10 rounded-lg text-xs transition-colors"
+        >
+          <Trash2 className="w-3 h-3" /> Delete
+        </button>
+      </div>
 
       {g.status !== "completed" && (
         <div className="mt-3 flex items-center gap-2 justify-center">
