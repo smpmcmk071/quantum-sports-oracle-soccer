@@ -135,6 +135,15 @@ export default function Matches() {
             <h1 className="text-xl font-bold">MLS Matches</h1>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={syncScores}
+              disabled={syncing}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 text-xs font-medium rounded-xl transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
+              {syncing ? "Syncing…" : "Sync ESPN Scores"}
+            </button>
+            {syncMsg && <span className="text-xs text-emerald-400">{syncMsg}</span>}
             <Filter className="w-4 h-4 text-white/30" />
             {["all", "scheduled", "in_progress", "completed"].map(s => (
               <button
