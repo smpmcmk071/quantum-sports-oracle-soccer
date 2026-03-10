@@ -200,11 +200,12 @@ Use ALL available data — team form, goals scored/conceded, player zodiac signs
                   </div>
 
                   {/* Score breakdown */}
-                  <div className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="mt-4 grid grid-cols-4 gap-2">
                     {[
                       ["Numerology", p.numerology_score],
                       ["Astrology", p.astrology_score],
-                      ["Cosmic Energy", p.cosmic_energy_score],
+                      ["Cosmic", p.cosmic_energy_score],
+                      ["Battle Stats", p.battle_stats_score],
                     ].map(([label, val]) => (
                       <div key={label} className="bg-white/[0.03] rounded-xl p-2 text-center">
                         <div className="text-lg font-bold text-white">{val ?? "—"}</div>
