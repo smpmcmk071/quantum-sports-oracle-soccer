@@ -112,8 +112,8 @@ Deno.serve(async (req) => {
 
         const homeScore = parseInt(homeComp.score || "0", 10);
         const awayScore = parseInt(awayComp.score || "0", 10);
-        const gameDate  = event.date?.split("T")[0];
-        const gameTime  = event.date?.split("T")[1]?.substring(0, 5);
+        const gameDate  = toEasternDate(event.date);
+        const gameTime  = toEasternTime(event.date);
         const venue     = competition.venue?.fullName || "";
 
         const actualWinner = homeScore > awayScore ? homeId
