@@ -34,25 +34,45 @@ export default function Predictions() {
   const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
   const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
 
-  const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
-  const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
-
   async function generatePrediction() {
     if (!selectedGame) return;
     setGenerating(selectedGame);
-    const game = gameMap[selectedGame] || games.find(g => g.id === selectedGame);
+    const game = games.find(g => g.id === selectedGame);
     const home = teamMap[game?.home_team_id];
     const away = teamMap[game?.away_team_id];
 
-    const prompt = `You are a Quantum Sports Oracle AI that predicts MLS soccer matches using astrology, numerology, and statistics.
+    // Fetch team stats + top players for both teams in parallel
+    const [homeStats, awayStats, homePlayers, awayPlayers] = await Promise.all([
+      base44.entities.TeamStats.filter({ team_id: game.home_team_id, season: 2026 }),
+      base44.entities.TeamStats.filter({ team_id: game.away_team_id, season: 2026 }),
+      base44.entities.Player.filter({ team_id: game.home_team_id, is_starter: true }),
+      base44.entities.Player.filter({ team_id: game.away_team_id, is_starter: true }),
+    ]);
+    const hs = homeStats[0] || {};
+    const as_ = awayStats[0] || {};
+
+    const formatTeamStats = (s) => s.games_played
+      ? `W${s.wins}-D${s.draws}-L${s.losses}, ${s.points}pts, GF:${s.goals_for} GA:${s.goals_against} GD:${s.goal_differential}`
+      : "No stats yet";
+
+    const formatPlayers = (players) => players.slice(0, 8).map(p =>
+      `${p.name} (${p.position}, ${p.goals || 0}G/${p.assists || 0}A, rating:${p.rating || "?"}, zodiac:${p.zodiac_sign || "?"})`
+    ).join("; ") || "No player data";
+
+    const prompt = `You are a Quantum Sports Oracle AI that predicts MLS soccer matches using astrology, numerology, statistics, and player data.
 
 Analyze this MLS match:
-- Home Team: ${home?.name || "Unknown"} (City: ${home?.city}, Founded: ${home?.founded_date}, Zodiac: ${home?.zodiac_sign}, Life Path: ${home?.life_path_number}, Destiny: ${home?.destiny_number}, Chinese Zodiac: ${home?.chinese_zodiac})
-- Away Team: ${away?.name || "Unknown"} (City: ${away?.city}, Founded: ${away?.founded_date}, Zodiac: ${away?.zodiac_sign}, Life Path: ${away?.life_path_number}, Destiny: ${away?.destiny_number}, Chinese Zodiac: ${away?.chinese_zodiac})
-- Match Date: ${game?.game_date}
-- Venue: ${game?.venue || "Unknown"}
+- Home Team: ${home?.name} | City: ${home?.city} | Founded: ${home?.founded_date} | Zodiac: ${home?.zodiac_sign} | Life Path: ${home?.life_path_number} | Destiny: ${home?.destiny_number} | Chinese Zodiac: ${home?.chinese_zodiac}
+- Home 2026 Stats: ${formatTeamStats(hs)}
+- Home Key Players: ${formatPlayers(homePlayers)}
 
-Based on numerological compatibility, astrological alignments, cosmic energy, and soccer performance patterns, provide a detailed prediction.`;
+- Away Team: ${away?.name} | City: ${away?.city} | Founded: ${away?.founded_date} | Zodiac: ${away?.zodiac_sign} | Life Path: ${away?.life_path_number} | Destiny: ${away?.destiny_number} | Chinese Zodiac: ${away?.chinese_zodiac}
+- Away 2026 Stats: ${formatTeamStats(as_)}
+- Away Key Players: ${formatPlayers(awayPlayers)}
+
+- Match Date: ${game?.game_date} | Venue: ${game?.venue || "Unknown"}
+
+Use ALL available data — team form, goals scored/conceded, player zodiac signs, numerology compatibility, and cosmic alignment on the match date — to generate a thorough prediction.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,
