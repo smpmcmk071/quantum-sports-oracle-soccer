@@ -88,6 +88,8 @@ export default function Matches() {
   const [filter, setFilter] = useState("scheduled");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState("");
 
   useEffect(() => {
     Promise.all([
