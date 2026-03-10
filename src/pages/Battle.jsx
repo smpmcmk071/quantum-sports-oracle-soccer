@@ -369,6 +369,16 @@ export default function Battle() {
           </div>
         </div>
 
+        {/* Cosmic Harmony */}
+        <CosmicHarmonyPanel
+          team1Players={team1Players}
+          team2Players={team2Players}
+          venue={matchVenue}
+          gameDate={matchDate}
+          team1={team1}
+          team2={team2}
+        />
+
         {/* Team Aggregate Stats */}
         {agg1 && agg2 && (
           <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 mb-6">
