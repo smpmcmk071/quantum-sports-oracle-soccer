@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
         const awayId = espnToId[awayComp.team?.id] || nameToId[awayComp.team?.displayName?.toLowerCase()];
         if (!homeId || !awayId) continue;
 
-        const gameDate = event.date?.split("T")[0];
-        const gameTime = event.date?.split("T")[1]?.substring(0, 5);
+        const gameDate = toEasternDate(event.date);
+        const gameTime = toEasternTime(event.date);
         const venue = competition.venue?.fullName || "";
         const statusType = event.status?.type?.name || "STATUS_SCHEDULED";
         const status = ["STATUS_FINAL","STATUS_FULL_TIME","STATUS_FT"].includes(statusType) ? "completed"
