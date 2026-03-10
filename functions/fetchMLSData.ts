@@ -13,16 +13,6 @@ Deno.serve(async (req) => {
     const { type = "schedule", season = 2026 } = await req.json().catch(() => ({}));
 
     // ── Get teams once for both flows ──────────────────────────────────────
-    // Helper: convert UTC ISO string to Eastern Time date/time
-    function toEasternDate(utcStr) {
-      if (!utcStr) return null;
-      return new Date(utcStr).toLocaleDateString('en-CA', { timeZone: 'America/New_York' }); // YYYY-MM-DD
-    }
-    function toEasternTime(utcStr) {
-      if (!utcStr) return null;
-      return new Date(utcStr).toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false });
-    }
-
     const teams = await base44.asServiceRole.entities.Team.list();
     const espnToId = teams.reduce((acc, t) => { if (t.espn_id) acc[t.espn_id] = t.id; return acc; }, {});
     const nameToId = teams.reduce((acc, t) => { acc[t.name.toLowerCase()] = t.id; return acc; }, {});
