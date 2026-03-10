@@ -102,6 +102,118 @@ function StatBar({ label, val1, val2 }) {
   );
 }
 
+// ── Cosmic Harmony Calculators ────────────────────────────────────────────
+function calcVenueNumerology(venue) {
+  if (!venue) return null;
+  const map = { a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8 };
+  let sum = venue.toLowerCase().split("").reduce((a,c) => a + (map[c] || 0), 0);
+  while (sum > 9 && sum !== 11 && sum !== 22) sum = sum.toString().split("").map(Number).reduce((a,b) => a+b, 0);
+  return sum;
+}
+
+function getDateZodiac(dateStr) {
+  if (!dateStr) return null;
+  const [,month,day] = dateStr.split("-").map(Number);
+  const signs = [[1,20,"Capricorn"],[2,19,"Aquarius"],[3,20,"Pisces"],[4,20,"Aries"],[5,21,"Taurus"],[6,21,"Gemini"],[7,23,"Cancer"],[8,23,"Leo"],[9,23,"Virgo"],[10,23,"Libra"],[11,22,"Scorpio"],[12,22,"Sagittarius"],[12,31,"Capricorn"]];
+  for (const [m,d,sign] of signs) { if (month < m || (month===m && day<d)) return sign; }
+  return "Capricorn";
+}
+
+function getDateUniversalNumber(dateStr) {
+  if (!dateStr) return null;
+  const digits = dateStr.replace(/-/g,"").split("").map(Number);
+  let sum = digits.reduce((a,b) => a+b, 0);
+  while (sum > 9 && sum !== 11 && sum !== 22) sum = sum.toString().split("").map(Number).reduce((a,b)=>a+b,0);
+  return sum;
+}
+
+function calcJerseyHarmony(players) {
+  if (!players.length) return null;
+  const nums = players.map(p => p.jersey_number).filter(Boolean);
+  if (!nums.length) return null;
+  let sum = nums.reduce((a,b)=>a+b,0);
+  while (sum > 9 && sum !== 11 && sum !== 22) sum = sum.toString().split("").map(Number).reduce((a,b)=>a+b,0);
+  return sum;
+}
+
+function calcCosmicHarmony(team1Players, team2Players, venue, gameDate) {
+  const venueNum = calcVenueNumerology(venue);
+  const dateNum = getDateUniversalNumber(gameDate);
+  const dateZodiac = getDateZodiac(gameDate);
+  const jersey1 = calcJerseyHarmony(team1Players);
+  const jersey2 = calcJerseyHarmony(team2Players);
+
+  // Zodiac fire/earth/air/water groups
+  const elements = { fire:["Aries","Leo","Sagittarius"], earth:["Taurus","Virgo","Capricorn"], air:["Gemini","Libra","Aquarius"], water:["Cancer","Scorpio","Pisces"] };
+  const getElement = z => Object.entries(elements).find(([,signs]) => signs.includes(z))?.[0] || "unknown";
+  const dateElement = getElement(dateZodiac);
+
+  const allPlayers = [...team1Players, ...team2Players];
+  const zodiacCounts = {};
+  allPlayers.forEach(p => { if (p.zodiac_sign) { zodiacCounts[p.zodiac_sign] = (zodiacCounts[p.zodiac_sign]||0)+1; } });
+  const dominantZodiac = Object.entries(zodiacCounts).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const dominantElement = getElement(dominantZodiac);
+  const elementHarmony = dominantElement === dateElement ? "Perfect" : ["fire","air"].includes(dominantElement) && ["fire","air"].includes(dateElement) ? "High" : ["earth","water"].includes(dominantElement) && ["earth","water"].includes(dateElement) ? "High" : "Neutral";
+
+  // Numerology harmony: venue + date alignment
+  const numHarmony = venueNum && dateNum ? (venueNum === dateNum ? "Perfect" : Math.abs(venueNum - dateNum) <= 2 ? "Strong" : "Moderate") : "Unknown";
+
+  // Jersey harmony: if jersey sum matches date number
+  const jerseyAlignment1 = jersey1 && dateNum ? jersey1 === dateNum ? "Aligned" : Math.abs(jersey1 - dateNum) <= 1 ? "Close" : "Off" : null;
+  const jerseyAlignment2 = jersey2 && dateNum ? jersey2 === dateNum ? "Aligned" : Math.abs(jersey2 - dateNum) <= 1 ? "Close" : "Off" : null;
+
+  // Overall score 0–100
+  const score = Math.round(
+    (elementHarmony === "Perfect" ? 35 : elementHarmony === "High" ? 25 : 15) +
+    (numHarmony === "Perfect" ? 35 : numHarmony === "Strong" ? 25 : 15) +
+    ((jerseyAlignment1 === "Aligned" ? 15 : jerseyAlignment1 === "Close" ? 10 : 5) +
+     (jerseyAlignment2 === "Aligned" ? 15 : jerseyAlignment2 === "Close" ? 10 : 5)) / 2
+  );
+
+  return { venueNum, dateNum, dateZodiac, dateElement, dominantZodiac, dominantElement, elementHarmony, numHarmony, jerseyAlignment1, jerseyAlignment2, jersey1, jersey2, score };
+}
+
+function CosmicHarmonyPanel({ team1Players, team2Players, venue, gameDate, team1, team2 }) {
+  if (!team1Players.length || !team2Players.length || !venue || !gameDate) return null;
+  const h = calcCosmicHarmony(team1Players, team2Players, venue, gameDate);
+  const scoreColor = h.score >= 70 ? "text-emerald-400" : h.score >= 50 ? "text-amber-400" : "text-rose-400";
+  const scoreBg = h.score >= 70 ? "from-emerald-500/10 to-teal-500/10 border-emerald-500/20" : h.score >= 50 ? "from-amber-500/10 to-orange-500/10 border-amber-500/20" : "from-rose-500/10 to-pink-500/10 border-rose-500/20";
+  return (
+    <div className={`bg-gradient-to-r ${scoreBg} border rounded-2xl p-4 mb-6`}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Star className="w-4 h-4 text-amber-400" />
+          <span className="text-sm font-bold text-white">Cosmic Harmony</span>
+          {venue && <span className="text-xs text-white/30">· {venue}</span>}
+        </div>
+        <div className={`text-2xl font-bold ${scoreColor}`}>{h.score}<span className="text-sm text-white/30">/100</span></div>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <div className="bg-white/[0.04] rounded-xl p-2.5">
+          <div className="text-white/30 mb-1">Match Date</div>
+          <div className="text-white font-semibold">{h.dateZodiac}</div>
+          <div className="text-white/40">{h.dateElement} · #{h.dateNum}</div>
+        </div>
+        <div className="bg-white/[0.04] rounded-xl p-2.5">
+          <div className="text-white/30 mb-1">Venue Numerology</div>
+          <div className="text-white font-semibold">#{h.venueNum}</div>
+          <div className={`${h.numHarmony === "Perfect" ? "text-emerald-400" : h.numHarmony === "Strong" ? "text-amber-400" : "text-white/40"}`}>{h.numHarmony} alignment</div>
+        </div>
+        <div className="bg-white/[0.04] rounded-xl p-2.5">
+          <div className="text-white/30 mb-1">Element Harmony</div>
+          <div className="text-white font-semibold">{h.dominantElement} field</div>
+          <div className={`${h.elementHarmony === "Perfect" ? "text-emerald-400" : h.elementHarmony === "High" ? "text-amber-400" : "text-white/40"}`}>{h.elementHarmony}</div>
+        </div>
+        <div className="bg-white/[0.04] rounded-xl p-2.5">
+          <div className="text-white/30 mb-1">Jersey Sums</div>
+          <div className="text-white font-semibold">#{h.jersey1} · #{h.jersey2}</div>
+          <div className="text-white/40">{h.jerseyAlignment1} / {h.jerseyAlignment2}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Battle() {
   const [teams, setTeams] = useState([]);
   const [team1Id, setTeam1Id] = useState("");
@@ -112,10 +224,32 @@ export default function Battle() {
   const [animStep, setAnimStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
+  const [matchVenue, setMatchVenue] = useState("");
+  const [matchDate, setMatchDate] = useState("");
 
   useEffect(() => {
-    base44.entities.Team.list().then(setTeams);
+    const params = new URLSearchParams(window.location.search);
+    const homeId = params.get("homeTeamId");
+    const awayId = params.get("awayTeamId");
+    const venue = params.get("venue") || "";
+    const date = params.get("gameDate") || "";
+    setMatchVenue(venue);
+    setMatchDate(date);
+    base44.entities.Team.list().then(t => {
+      setTeams(t);
+      if (homeId) loadTeamPlayers(1, homeId, setTeam1Players, setTeam1Id);
+      if (awayId) loadTeamPlayers(2, awayId, setTeam2Players, setTeam2Id);
+    });
   }, []);
+
+  async function loadTeamPlayers(num, id, setPlayers, setId) {
+    setId(id);
+    setLoadingPlayers(true);
+    const players = await base44.entities.Player.filter({ team_id: id, is_starter: true });
+    const list = players.length > 0 ? players : await base44.entities.Player.filter({ team_id: id });
+    setPlayers(list.slice(0, 11));
+    setLoadingPlayers(false);
+  }
 
   async function onTeamChange(teamNum, id) {
     setResult(null);

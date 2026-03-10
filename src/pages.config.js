@@ -48,23 +48,23 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Admin from './pages/Admin';
+import Battle from './pages/Battle';
 import Dashboard from './pages/Dashboard';
 import Matches from './pages/Matches';
 import Predictions from './pages/Predictions';
 import Standings from './pages/Standings';
 import TeamStats from './pages/TeamStats';
-import Battle from './pages/Battle';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Admin": Admin,
+    "Battle": Battle,
     "Dashboard": Dashboard,
     "Matches": Matches,
     "Predictions": Predictions,
     "Standings": Standings,
     "TeamStats": TeamStats,
-    "Battle": Battle,
 }
 
 export const pagesConfig = {
