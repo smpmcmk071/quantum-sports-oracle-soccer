@@ -34,6 +34,9 @@ export default function Predictions() {
   const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
   const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
 
+  const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
+  const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
+
   async function generatePrediction() {
     if (!selectedGame) return;
     setGenerating(selectedGame);
