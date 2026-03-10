@@ -53,6 +53,7 @@ import Matches from './pages/Matches';
 import Predictions from './pages/Predictions';
 import Standings from './pages/Standings';
 import TeamStats from './pages/TeamStats';
+import Battle from './pages/Battle';
 import __Layout from './Layout.jsx';
 
 
@@ -63,6 +64,7 @@ export const PAGES = {
     "Predictions": Predictions,
     "Standings": Standings,
     "TeamStats": TeamStats,
+    "Battle": Battle,
 }
 
 export const pagesConfig = {
