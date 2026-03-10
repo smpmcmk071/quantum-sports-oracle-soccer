@@ -261,6 +261,21 @@ export default function Admin() {
     setGameForm({ home_team_id: "", away_team_id: "", game_date: "", game_time: "", venue: "", matchday: "", season: 2026 });
   }
 
+  async function syncJerseyNumbers() {
+    setJerseyLoading(true);
+    setJerseyStatus(null);
+    try {
+      const res = await base44.functions.invoke("fetchMLSData", { type: "jerseys" });
+      const d = res?.data;
+      setJerseyStatus("success");
+      setJerseyMsg(`✓ Updated ${d?.players_updated || 0} players with jersey numbers.`);
+    } catch (e) {
+      setJerseyStatus("error");
+      setJerseyMsg("Sync failed: " + (e?.response?.data?.error || e.message));
+    }
+    setJerseyLoading(false);
+  }
+
   async function syncScoresFromESPN() {
     setSyncLoading(true);
     setSyncStatus(null);
