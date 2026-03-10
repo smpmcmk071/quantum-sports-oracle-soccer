@@ -679,6 +679,18 @@ Keep realistic for early season.`,
           <StatusBadge status={gameStatus} message={gameMsg} />
         </Section>
 
+        {/* 3b. Sync Jersey Numbers from ESPN */}
+        <Section title="3b. Sync Jersey Numbers from ESPN" icon={RefreshCw}>
+          <p className="text-sm text-white/40 mb-4">
+            Fetches official ESPN rosters for all teams and updates jersey numbers (and ESPN IDs) on existing players. Run after loading rosters.
+          </p>
+          <button onClick={syncJerseyNumbers} disabled={jerseyLoading} className={btnPrimary}>
+            {jerseyLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+            {jerseyLoading ? "Syncing…" : "Sync Jersey Numbers from ESPN"}
+          </button>
+          <StatusBadge status={jerseyStatus} message={jerseyMsg} />
+        </Section>
+
         {/* 4. Load Full Team Roster via AI */}
         <Section title="4. Load Full Team Roster (AI)" icon={Users}>
           <p className="text-sm text-white/40 mb-4">
