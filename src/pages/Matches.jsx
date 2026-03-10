@@ -179,7 +179,7 @@ export default function Matches() {
         ) : (
           <div className="space-y-3">
             {filtered.map(g => (
-              <MatchRow key={g.id} g={g} teamMap={teamMap} updating={updating} onMarkResult={markResult} />
+              <MatchRow key={g.id} g={g} teamMap={teamMap} updating={updating} onMarkResult={markResult} onDelete={deleteGame} />
             ))}
           </div>
         )}
