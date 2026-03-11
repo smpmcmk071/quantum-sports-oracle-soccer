@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Trophy, Zap, Target, Activity, ChevronRight, Star, BarChart2, Swords } from "lucide-react";
+import { Trophy, Zap, Target, Activity, Star, BarChart2, Swords, FlaskConical } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
 import MLSNews from "../components/MLS_News";
+import AdvancedAnalytics from "../components/dashboard/AdvancedAnalytics";
 
 const MLS_TEAMS = [
   "Inter Miami", "LAFC", "LA Galaxy", "Seattle Sounders", "Atlanta United",
