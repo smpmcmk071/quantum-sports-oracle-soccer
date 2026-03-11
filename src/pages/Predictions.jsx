@@ -207,6 +207,14 @@ Use ALL available data — team form, goals scored/conceded, player zodiac signs
                           {BET_LABEL[p.bet_recommendation]}
                         </span>
                       )}
+                      <button
+                        onClick={() => deletePrediction(p.id)}
+                        disabled={deleting === p.id}
+                        className="text-white/20 hover:text-rose-400 transition-colors mt-1"
+                        title="Delete prediction"
+                      >
+                        {deleting === p.id ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                      </button>
                     </div>
                   </div>
 
