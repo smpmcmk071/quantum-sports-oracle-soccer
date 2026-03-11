@@ -166,6 +166,11 @@ export default function Admin() {
   const [jerseyStatus, setJerseyStatus] = useState(null);
   const [jerseyMsg, setJerseyMsg] = useState("");
 
+  // Update logos
+  const [logosLoading, setLogosLoading] = useState(false);
+  const [logosStatus, setLogosStatus] = useState(null);
+  const [logosMsg, setLogosMsg] = useState("");
+
   // Team stats
   const [statsTeamId, setStatsTeamId] = useState("");
   const [statsForm, setStatsForm] = useState({ wins: 0, losses: 0, draws: 0, goals_for: 0, goals_against: 0, goal_differential: 0 });
