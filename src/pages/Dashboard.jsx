@@ -83,6 +83,33 @@ export default function Dashboard() {
           ))}
         </div>
 
+        {/* Tabs */}
+        <div className="flex gap-2 border-b border-white/[0.06] pb-0">
+          {[
+            { key: "overview", label: "Overview", icon: BarChart2 },
+            { key: "analytics", label: "Advanced Analytics", icon: FlaskConical },
+          ].map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all -mb-px ${
+                activeTab === key
+                  ? "border-violet-500 text-violet-300 bg-violet-500/10"
+                  : "border-transparent text-white/40 hover:text-white/70"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "analytics" && (
+          <AdvancedAnalytics predictions={predictions} teamMap={teamMap} />
+        )}
+
+        {activeTab === "overview" && <>
+
         {/* Upcoming Matches & Predictions */}
         <div className="grid sm:grid-cols-2 gap-6">
 
