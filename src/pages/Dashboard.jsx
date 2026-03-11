@@ -32,7 +32,7 @@ export default function Dashboard() {
     Promise.all([
       base44.entities.Game.filter({ status: "scheduled" }, "-game_date", 10),
       base44.entities.Team.list(),
-      base44.entities.Prediction.filter({ is_archived: false }, "-created_date", 10),
+      base44.entities.Prediction.filter({ is_archived: false }, "-created_date", 50),
       base44.entities.TeamStats.filter({ season: 2026 }, "-points", 5),
     ]).then(([g, t, p, ts]) => {
       setGames(g);
