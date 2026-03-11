@@ -114,9 +114,9 @@ export default function Standings() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           {team?.logo_url && (
-                            <img src={team.logo_url} alt="" className="w-5 h-5 object-contain opacity-80" />
+                            <img src={team.logo_url} alt={team.name} className="w-6 h-6 object-contain flex-shrink-0" />
                           )}
-                          <div>
+                          <div className="min-w-0">
                             <div className="font-medium text-white text-sm">{team?.name || "—"}</div>
                             {team?.conference && (
                               <div className="text-[10px] text-white/30">{team.conference}</div>
