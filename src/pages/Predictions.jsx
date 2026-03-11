@@ -181,8 +181,11 @@ Use ALL available data — team form, goals scored/conceded, player zodiac signs
                 <div key={p.id} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 hover:bg-white/[0.05] transition-all">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
+                      {game?.game_date && (
+                        <div className="text-xs text-cyan-400/70 font-semibold mb-0.5">📅 {game.game_date}</div>
+                      )}
                       {home && away && (
-                        <div className="text-xs text-white/30 mb-1">{home.name} vs {away.name} · {game?.game_date}</div>
+                        <div className="text-xs text-white/30 mb-1">{home.name} vs {away.name}</div>
                       )}
                       <div className="font-bold text-violet-300 text-base">{winner?.name || "Unknown"} to win</div>
                       {p.prediction_notes && (
