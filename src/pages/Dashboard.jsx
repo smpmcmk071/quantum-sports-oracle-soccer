@@ -231,8 +231,14 @@ export default function Dashboard() {
                     return (
                       <tr key={ts.id} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
                         <td className="px-4 py-3 text-white font-medium">
-                          <span className="text-white/30 mr-2">{i + 1}.</span>
-                          {team?.name || "—"}
+                          <div className="flex items-center gap-2">
+                            <span className="text-white/30">{i + 1}.</span>
+                            <div
+                              className="w-2 h-2 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: team?.primary_color || "#888" }}
+                            />
+                            {team?.name || "—"}
+                          </div>
                         </td>
                         <td className="text-center px-3 py-3 text-emerald-400">{ts.wins}</td>
                         <td className="text-center px-3 py-3 text-white/50">{ts.draws}</td>
