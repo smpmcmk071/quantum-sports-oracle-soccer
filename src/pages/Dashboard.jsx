@@ -108,7 +108,8 @@ export default function Dashboard() {
           <AdvancedAnalytics predictions={predictions} teamMap={teamMap} />
         )}
 
-        {activeTab === "overview" && <>
+        {activeTab === "overview" && (
+        <div className="space-y-8">
 
         {/* Upcoming Matches & Predictions */}
         <div className="grid sm:grid-cols-2 gap-6">
