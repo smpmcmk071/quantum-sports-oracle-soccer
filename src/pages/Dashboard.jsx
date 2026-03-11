@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [predictions, setPredictions] = useState([]);
   const [teamStats, setTeamStats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     Promise.all([
