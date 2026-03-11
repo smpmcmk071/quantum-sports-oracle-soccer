@@ -281,6 +281,22 @@ export default function Admin() {
     setJerseyLoading(false);
   }
 
+  async function updateTeamLogos() {
+    setLogosLoading(true);
+    setLogosStatus(null);
+    try {
+      const res = await base44.functions.invoke("updateTeamLogosWikipedia");
+      const d = res?.data;
+      const updated = d?.details?.filter(x => x.status === "updated").length || 0;
+      setLogosStatus("success");
+      setLogosMsg(`✓ Updated ${updated} team logos from Wikipedia SVGs.`);
+    } catch (e) {
+      setLogosStatus("error");
+      setLogosMsg("Update failed: " + (e?.response?.data?.error || e.message));
+    }
+    setLogosLoading(false);
+  }
+
   async function syncScoresFromESPN() {
     setSyncLoading(true);
     setSyncStatus(null);
