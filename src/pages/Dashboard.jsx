@@ -252,7 +252,8 @@ export default function Dashboard() {
           For entertainment purposes only. Quantum Oracle does not encourage gambling.
         </p>
 
-        </> }
+        </div>
+        )}
 
       </div>
     </div>
