@@ -250,6 +250,9 @@ export default function Dashboard() {
         <p className="text-center text-white/20 text-xs pb-4">
           For entertainment purposes only. Quantum Oracle does not encourage gambling.
         </p>
+
+        </> }
+
       </div>
     </div>
   );
