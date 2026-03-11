@@ -409,16 +409,20 @@ export default function Battle() {
 
         {/* Live Score */}
         {result && (
-          <div className="flex justify-center gap-8 mb-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-violet-400">{result.score1}</div>
-              <div className="text-xs text-white/30">{team1?.name}</div>
+          <div className="flex flex-col items-center mb-6">
+            <div className="text-[10px] uppercase tracking-widest text-white/25 mb-2">Player Matchups Won</div>
+            <div className="flex justify-center gap-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-violet-400">{result.score1}</div>
+                <div className="text-xs text-white/30">{team1?.name}</div>
+              </div>
+              <div className="text-2xl font-bold text-white/20 self-center">–</div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-cyan-400">{result.score2}</div>
+                <div className="text-xs text-white/30">{team2?.name}</div>
+              </div>
             </div>
-            <div className="text-2xl font-bold text-white/20 self-center">–</div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-cyan-400">{result.score2}</div>
-              <div className="text-xs text-white/30">{team2?.name}</div>
-            </div>
+            <div className="text-[10px] text-white/20 mt-1">out of {result.log.length} player duels · not a goal score</div>
           </div>
         )}
 
