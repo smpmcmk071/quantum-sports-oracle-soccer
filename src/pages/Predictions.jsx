@@ -17,6 +17,14 @@ export default function Predictions() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(null);
   const [selectedGame, setSelectedGame] = useState("");
+  const [deleting, setDeleting] = useState(null);
+
+  async function deletePrediction(id) {
+    setDeleting(id);
+    await base44.entities.Prediction.delete(id);
+    setPredictions(prev => prev.filter(p => p.id !== id));
+    setDeleting(null);
+  }
 
   const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
   const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
