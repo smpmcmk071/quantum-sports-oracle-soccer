@@ -24,7 +24,7 @@ export default function Predictions() {
   useEffect(() => {
     Promise.all([
       base44.entities.Prediction.filter({ is_archived: false }, "-created_date", 50),
-      base44.entities.Game.filter({ status: "scheduled" }, "game_date", 100),
+      base44.entities.Game.list("-game_date", 200),
       base44.entities.Team.list(),
     ]).then(([p, g, t]) => {
       setPredictions(p);
