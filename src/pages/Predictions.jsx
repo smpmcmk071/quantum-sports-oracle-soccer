@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Zap, RefreshCw, TrendingUp, Star, CheckCircle, XCircle } from "lucide-react";
+import { Zap, RefreshCw, TrendingUp, Star, CheckCircle, XCircle, Trash2 } from "lucide-react";
 
 function ConfidenceBadge({ value }) {
   const color = value >= 80 ? "text-emerald-400 bg-emerald-400/10" : value >= 65 ? "text-amber-400 bg-amber-400/10" : "text-rose-400 bg-rose-400/10";
