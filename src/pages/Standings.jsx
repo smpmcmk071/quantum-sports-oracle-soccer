@@ -25,6 +25,8 @@ export default function Standings() {
 
   const filtered = teamStats
     .filter(ts => {
+      // Only show teams with at least 1 game played
+      if ((ts.games_played ?? 0) === 0) return false;
       if (activeConference === "All") return true;
       return teamMap[ts.team_id]?.conference === activeConference;
     })
