@@ -639,6 +639,18 @@ Keep realistic for early season.`,
           </div>
         </div>
 
+        {/* 0. Update Team Logos */}
+        <Section title="0. Update Team Logos to Wikipedia SVGs" icon={Upload} defaultOpen={true}>
+          <p className="text-sm text-white/40 mb-4">
+            Fixes broken team logo URLs by updating to reliable Wikipedia Commons SVG assets.
+          </p>
+          <button onClick={updateTeamLogos} disabled={logosLoading} className={btnPrimary}>
+            {logosLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            {logosLoading ? "Updating..." : "Update All Team Logos"}
+          </button>
+          <StatusBadge status={logosStatus} message={logosMsg} />
+        </Section>
+
         {/* 1. Load All MLS Teams */}
         <Section title="1. Load All 30 MLS Teams" icon={Users} defaultOpen={true}>
           <p className="text-sm text-white/40 mb-4">
