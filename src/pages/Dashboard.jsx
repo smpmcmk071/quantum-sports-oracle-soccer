@@ -44,6 +44,7 @@ export default function Dashboard() {
   }, []);
 
   const teamMap = teams.reduce((acc, t) => { acc[t.id] = t; return acc; }, {});
+  const gameMap = games.reduce((acc, g) => { acc[g.id] = g; return acc; }, {});
 
   const statsCards = [
     { label: "MLS Teams", value: teams.length || "—", icon: Trophy, color: "from-amber-400 to-orange-500" },
