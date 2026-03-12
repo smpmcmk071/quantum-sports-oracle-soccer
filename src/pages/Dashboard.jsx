@@ -184,13 +184,17 @@ export default function Dashboard() {
               <div className="space-y-2">
                 {predictions.map(p => {
                   const winner = teamMap[p.predicted_winner_id];
-                  return (
-                    <div key={p.id} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 hover:bg-white/[0.05] transition-all">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-sm text-violet-300">{winner?.name || "Unknown"}</div>
-                          <div className="text-xs text-white/30 mt-0.5 capitalize">{p.bet_recommendation?.replace(/_/g, " ")}</div>
-                        </div>
+                  const game = gameMap[p.game_id];
+                   return (
+                     <div key={p.id} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 hover:bg-white/[0.05] transition-all">
+                       <div className="flex items-center justify-between">
+                         <div>
+                           <div className="font-semibold text-sm text-violet-300">{winner?.name || "Unknown"}</div>
+                           <div className="text-xs text-white/30 mt-0.5 capitalize">
+                             {p.bet_recommendation?.replace(/_/g, " ")}
+                             {game?.game_date && <span className="ml-2 text-white/20">· {game.game_date}</span>}
+                           </div>
+                         </div>
                         <ConfidenceBadge value={p.confidence_score || 0} />
                       </div>
                       {p.prediction_notes && (
