@@ -136,7 +136,7 @@ export default function Dashboard() {
                 <Link to={createPageUrl("Admin")} className="text-violet-400 text-xs mt-2 inline-block hover:text-violet-300">Load match data →</Link>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
                 {games.map(g => {
                   const home = teamMap[g.home_team_id];
                   const away = teamMap[g.away_team_id];
