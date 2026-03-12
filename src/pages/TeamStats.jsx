@@ -81,10 +81,9 @@ export default function TeamStats() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4 flex-1">
-                        <div
-                          className="w-4 h-4 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: team?.primary_color || "#888" }}
-                        />
+                        {team?.logo_url && (
+                          <img src={team.logo_url} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
+                        )}
                         <div className="flex-1">
                           <div className="font-semibold text-white">{team.name}</div>
                           <div className="text-xs text-white/30">{team.conference} Conference</div>

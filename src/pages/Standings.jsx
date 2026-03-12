@@ -113,10 +113,9 @@ export default function Standings() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div
-                            className="w-3 h-3 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: team?.primary_color || "#888" }}
-                          />
+                          {team?.logo_url && (
+                            <img src={team.logo_url} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
+                          )}
                           <div className="min-w-0">
                             <div className="font-medium text-white text-sm">{team?.name || "—"}</div>
                             {team?.conference && (
