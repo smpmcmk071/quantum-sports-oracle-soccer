@@ -40,6 +40,7 @@ export default function Dashboard() {
       setTeams(t);
       setPredictions(p);
       setTeamStats(ts);
+      setAllGames(allGames);
       setLoading(false);
     });
   }, []);
