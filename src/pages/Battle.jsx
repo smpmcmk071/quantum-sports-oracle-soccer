@@ -198,8 +198,9 @@ function CosmicHarmonyPanel({ team1Players, team2Players, venue, gameDate, team1
           <div className="text-white/40">{h.dateElement} · #{h.dateNum}</div>
         </div>
         <div className="bg-white/[0.04] rounded-xl p-2.5">
-          <div className="text-white/30 mb-1">Venue Numerology</div>
-          <div className="text-white font-semibold">#{h.venueNum}</div>
+          <div className="text-white/30 mb-1">City / Venue</div>
+          {h.cityNum && <div className="text-white font-semibold">City #{h.cityNum} {h.venueNum ? <span className="text-white/40 text-[10px]">· Venue #{h.venueNum}</span> : null}</div>}
+          {!h.cityNum && h.venueNum && <div className="text-white font-semibold">Venue #{h.venueNum}</div>}
           <div className={`${h.numHarmony === "Perfect" ? "text-emerald-400" : h.numHarmony === "Strong" ? "text-amber-400" : "text-white/40"}`}>{h.numHarmony} alignment</div>
         </div>
         <div className="bg-white/[0.04] rounded-xl p-2.5">
