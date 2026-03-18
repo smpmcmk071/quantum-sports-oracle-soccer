@@ -36,8 +36,11 @@ export default function Dashboard() {
       base44.entities.TeamStats.filter({ season: 2026 }, "-points", 5),
       base44.entities.Game.list(),
     ]).then(([g, t, p, ts, allGames]) => {
-      const today = new Date().toISOString().split("T")[0];
-      const tenDaysOut = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+      const now = new Date();
+      const pad = n => String(n).padStart(2, "0");
+      const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      const tenDaysLater = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 10);
+      const tenDaysOut = `${tenDaysLater.getFullYear()}-${pad(tenDaysLater.getMonth() + 1)}-${pad(tenDaysLater.getDate())}`;
       setGames(g.filter(game => game.game_date >= today && game.game_date <= tenDaysOut));
       setTeams(t);
       setPredictions(p);
