@@ -136,8 +136,9 @@ function calcJerseyHarmony(players) {
   return sum;
 }
 
-function calcCosmicHarmony(team1Players, team2Players, venue, gameDate) {
+function calcCosmicHarmony(team1Players, team2Players, venue, gameDate, homeCity) {
   const venueNum = calcVenueNumerology(venue);
+  const cityNum = calcVenueNumerology(homeCity);
   const dateNum = getDateUniversalNumber(gameDate);
   const dateZodiac = getDateZodiac(gameDate);
   const jersey1 = calcJerseyHarmony(team1Players);
