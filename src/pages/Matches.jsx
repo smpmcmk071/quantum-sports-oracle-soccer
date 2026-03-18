@@ -99,7 +99,7 @@ export default function Matches() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Game.list("-game_date", 100),
+      base44.entities.Game.list("-game_date", 300),
       base44.entities.Team.list(),
     ]).then(([g, t]) => {
       setGames(g);
