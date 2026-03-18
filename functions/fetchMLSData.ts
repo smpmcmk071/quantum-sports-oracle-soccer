@@ -108,9 +108,12 @@ Deno.serve(async (req) => {
       const resolveTeam = (comp) => {
         const id = espnToId[comp.team?.id];
         if (id) return id;
-        const byExact = nameToId[comp.team?.displayName?.toLowerCase()];
-        if (byExact) return byExact;
-        return normalizedNameToId[normalize(comp.team?.displayName)];
+        const rawName = comp.team?.displayName?.toLowerCase() || "";
+        const aliasedName = ESPN_ALIASES[rawName] || rawName;
+        return nameToId[aliasedName]
+          || nameToId[rawName]
+          || normalizedNameToId[normalize(aliasedName)]
+          || normalizedNameToId[normalize(rawName)];
       };
 
       let updated = 0;
