@@ -78,15 +78,37 @@ Deno.serve(async (req) => {
       // Load existing games from DB
       const dbGames = await base44.asServiceRole.entities.Game.list();
 
-      // Build a lookup: "homeId_awayId_date" → game record
+      // Build lookups: by key AND by espn_event_id
       const gameKey = (homeId, awayId, date) => `${homeId}_${awayId}_${date}`;
-      const dbGameMap = dbGames.reduce((acc, g) => {
+      const dbGameByKey = dbGames.reduce((acc, g) => {
         acc[gameKey(g.home_team_id, g.away_team_id, g.game_date)] = g;
         return acc;
       }, {});
+      const dbGameByEspnId = dbGames.reduce((acc, g) => {
+        if (g.espn_event_id) acc[g.espn_event_id] = g;
+        return acc;
+      }, {});
+
+      // Build fuzzy name matcher (strip common suffixes for matching)
+      const normalize = (name) => name?.toLowerCase()
+        .replace(/\s*(fc|sc|cf|united|city|sporting|real|club|athletic)\s*/g, " ")
+        .replace(/\s+/g, " ").trim() || "";
+      const normalizedNameToId = teams.reduce((acc, t) => {
+        acc[normalize(t.name)] = t.id;
+        return acc;
+      }, {});
+
+      const resolveTeam = (comp) => {
+        const id = espnToId[comp.team?.id];
+        if (id) return id;
+        const byExact = nameToId[comp.team?.displayName?.toLowerCase()];
+        if (byExact) return byExact;
+        return normalizedNameToId[normalize(comp.team?.displayName)];
+      };
 
       let updated = 0;
       let created = 0;
+      const unmatched = [];
 
       for (const event of completedEvents) {
         const competition = event.competitions?.[0];
@@ -96,33 +118,38 @@ Deno.serve(async (req) => {
         const awayComp = competition.competitors?.find(c => c.homeAway === "away");
         if (!homeComp || !awayComp) continue;
 
-        const homeId = espnToId[homeComp.team?.id] || nameToId[homeComp.team?.displayName?.toLowerCase()];
-        const awayId = espnToId[awayComp.team?.id] || nameToId[awayComp.team?.displayName?.toLowerCase()];
-        if (!homeId || !awayId) continue;
+        const homeId = resolveTeam(homeComp);
+        const awayId = resolveTeam(awayComp);
+        if (!homeId || !awayId) {
+          unmatched.push({ home: homeComp.team?.displayName, away: awayComp.team?.displayName });
+          continue;
+        }
 
         const homeScore = parseInt(homeComp.score || "0", 10);
         const awayScore = parseInt(awayComp.score || "0", 10);
         const gameDate  = event.date?.split("T")[0];
         const gameTime  = event.date?.split("T")[1]?.substring(0, 5);
         const venue     = competition.venue?.fullName || "";
+        const espnEventId = String(event.id || "");
 
         const actualWinner = homeScore > awayScore ? homeId
           : awayScore > homeScore ? awayId
           : "draw";
 
-        const existingGame = dbGameMap[gameKey(homeId, awayId, gameDate)];
+        // Find existing: by espn_event_id first, then by key
+        const existingGame = (espnEventId && dbGameByEspnId[espnEventId])
+          || dbGameByKey[gameKey(homeId, awayId, gameDate)];
 
         if (existingGame) {
-          // Always update scores for completed games
           await base44.asServiceRole.entities.Game.update(existingGame.id, {
             status: "completed",
             home_score: homeScore,
             away_score: awayScore,
             actual_winner: actualWinner,
+            espn_event_id: espnEventId,
           });
           updated++;
         } else {
-          // Create missing game record
           await base44.asServiceRole.entities.Game.create({
             home_team_id: homeId,
             away_team_id: awayId,
@@ -135,6 +162,7 @@ Deno.serve(async (req) => {
             home_score: homeScore,
             away_score: awayScore,
             actual_winner: actualWinner,
+            espn_event_id: espnEventId,
           });
           created++;
         }
