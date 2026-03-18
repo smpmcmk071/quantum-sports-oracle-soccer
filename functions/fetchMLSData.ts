@@ -89,6 +89,13 @@ Deno.serve(async (req) => {
         return acc;
       }, {});
 
+      // ESPN name aliases
+      const ESPN_ALIASES = {
+        "red bull new york": "new york red bulls",
+        "nycfc": "new york city fc",
+        "cf montréal": "cf montréal",
+      };
+
       // Build fuzzy name matcher (strip common suffixes for matching)
       const normalize = (name) => name?.toLowerCase()
         .replace(/\s*(fc|sc|cf|united|city|sporting|real|club|athletic)\s*/g, " ")
