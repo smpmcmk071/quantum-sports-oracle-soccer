@@ -336,7 +336,14 @@ export default function Battle() {
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-white/30">🏟 Venue:</span>
                 <span className="text-white font-semibold">{matchVenue}</span>
-                <span className="text-cyan-300 text-xs">(Numerology #{calcVenueNumerology(matchVenue)})</span>
+                <span className="text-cyan-300 text-xs">(Venue #{calcVenueNumerology(matchVenue)})</span>
+              </div>
+            )}
+            {teams.find(t => t.id === team1Id)?.city && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-white/30">🏙 City:</span>
+                <span className="text-white font-semibold">{teams.find(t => t.id === team1Id).city}</span>
+                <span className="text-violet-300 text-xs">(City #{calcVenueNumerology(teams.find(t => t.id === team1Id).city)})</span>
               </div>
             )}
           </div>
