@@ -156,8 +156,9 @@ function calcCosmicHarmony(team1Players, team2Players, venue, gameDate, homeCity
   const dominantElement = getElement(dominantZodiac);
   const elementHarmony = dominantElement === dateElement ? "Perfect" : ["fire","air"].includes(dominantElement) && ["fire","air"].includes(dateElement) ? "High" : ["earth","water"].includes(dominantElement) && ["earth","water"].includes(dateElement) ? "High" : "Neutral";
 
-  // Numerology harmony: venue + date alignment
-  const numHarmony = venueNum && dateNum ? (venueNum === dateNum ? "Perfect" : Math.abs(venueNum - dateNum) <= 2 ? "Strong" : "Moderate") : "Unknown";
+  // Numerology harmony: city (primary) + venue + date alignment
+  const primaryNum = cityNum || venueNum;
+  const numHarmony = primaryNum && dateNum ? (primaryNum === dateNum ? "Perfect" : Math.abs(primaryNum - dateNum) <= 2 ? "Strong" : "Moderate") : "Unknown";
 
   // Jersey harmony: if jersey sum matches date number
   const jerseyAlignment1 = jersey1 && dateNum ? jersey1 === dateNum ? "Aligned" : Math.abs(jersey1 - dateNum) <= 1 ? "Close" : "Off" : null;
