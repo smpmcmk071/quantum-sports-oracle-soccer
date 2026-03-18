@@ -176,8 +176,9 @@ function calcCosmicHarmony(team1Players, team2Players, venue, gameDate, homeCity
 }
 
 function CosmicHarmonyPanel({ team1Players, team2Players, venue, gameDate, team1, team2 }) {
-  if (!team1Players.length || !team2Players.length || !venue || !gameDate) return null;
-  const h = calcCosmicHarmony(team1Players, team2Players, venue, gameDate);
+  if (!team1Players.length || !team2Players.length || !gameDate) return null;
+  const homeCity = team1?.city || "";
+  const h = calcCosmicHarmony(team1Players, team2Players, venue, gameDate, homeCity);
   const scoreColor = h.score >= 70 ? "text-emerald-400" : h.score >= 50 ? "text-amber-400" : "text-rose-400";
   const scoreBg = h.score >= 70 ? "from-emerald-500/10 to-teal-500/10 border-emerald-500/20" : h.score >= 50 ? "from-amber-500/10 to-orange-500/10 border-amber-500/20" : "from-rose-500/10 to-pink-500/10 border-rose-500/20";
   return (
