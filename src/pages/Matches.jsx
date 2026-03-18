@@ -118,7 +118,7 @@ export default function Matches() {
     const d = res?.data;
     setSyncMsg(`✓ Updated ${d?.games_updated || 0} results`);
     // Refresh games
-    const updated = await base44.entities.Game.list("-game_date", 100);
+    const updated = await base44.entities.Game.list("-game_date", 300);
     setGames(updated);
     setSyncing(false);
   }
