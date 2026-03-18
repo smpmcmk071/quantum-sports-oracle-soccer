@@ -245,6 +245,7 @@ Deno.serve(async (req) => {
         games_updated: updated,
         games_created: created,
         completed_total: completedEvents.length,
+        unmatched_teams: unmatched,
         team_stats_updated: statsUpdated,
         team_stats_created: statsCreated,
       });
