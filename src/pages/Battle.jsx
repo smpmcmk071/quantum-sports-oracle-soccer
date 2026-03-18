@@ -172,7 +172,7 @@ function calcCosmicHarmony(team1Players, team2Players, venue, gameDate, homeCity
      (jerseyAlignment2 === "Aligned" ? 15 : jerseyAlignment2 === "Close" ? 10 : 5)) / 2
   );
 
-  return { venueNum, dateNum, dateZodiac, dateElement, dominantZodiac, dominantElement, elementHarmony, numHarmony, jerseyAlignment1, jerseyAlignment2, jersey1, jersey2, score };
+  return { venueNum, cityNum, dateNum, dateZodiac, dateElement, dominantZodiac, dominantElement, elementHarmony, numHarmony, jerseyAlignment1, jerseyAlignment2, jersey1, jersey2, score };
 }
 
 function CosmicHarmonyPanel({ team1Players, team2Players, venue, gameDate, team1, team2 }) {
