@@ -269,6 +269,33 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, players_updated: updated, teams_skipped: skipped });
     }
 
+    // ── DEBUG: inspect raw ESPN event data ────────────────────────────────
+    if (type === "debug_scores") {
+      const startDate = `${season}0201`;
+      const endDate   = `${season}1231`;
+      const url = `${ESPN_BASE}/scoreboard?limit=200&dates=${startDate}-${endDate}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const completed = (data.events || []).filter(e =>
+        ["STATUS_FINAL","STATUS_FULL_TIME","STATUS_FT"].includes(e.status?.type?.name)
+      );
+      const sample = completed.slice(0, 2).map(e => {
+        const c = e.competitions?.[0];
+        const home = c?.competitors?.find(x => x.homeAway === "home");
+        const away = c?.competitors?.find(x => x.homeAway === "away");
+        return {
+          date: e.date,
+          status: e.status?.type?.name,
+          home_team: home?.team?.displayName,
+          home_score: home?.score,
+          away_team: away?.team?.displayName,
+          away_score: away?.score,
+          home_keys: home ? Object.keys(home) : [],
+        };
+      });
+      return Response.json({ total_completed: completed.length, sample });
+    }
+
     return Response.json({ error: "Unknown type" }, { status: 400 });
 
   } catch (error) {
