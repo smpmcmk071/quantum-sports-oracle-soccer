@@ -1,0 +1,63 @@
+{
+  "name": "BattleRecord",
+  "type": "object",
+  "properties": {
+    "player1_id": {
+      "type": "string",
+      "description": "FamilyMember ID of player 1"
+    },
+    "player2_id": {
+      "type": "string",
+      "description": "FamilyMember ID of player 2"
+    },
+    "player1_name": {
+      "type": "string",
+      "description": "Name of player 1"
+    },
+    "player2_name": {
+      "type": "string",
+      "description": "Name of player 2"
+    },
+    "winner_id": {
+      "type": "string",
+      "description": "FamilyMember ID of winner"
+    },
+    "winner_name": {
+      "type": "string",
+      "description": "Name of winner"
+    },
+    "player1_stats": {
+      "type": "string",
+      "description": "JSON string of player 1 battle stats"
+    },
+    "player2_stats": {
+      "type": "string",
+      "description": "JSON string of player 2 battle stats"
+    },
+    "battle_log": {
+      "type": "string",
+      "description": "JSON string of battle turn log"
+    },
+    "total_turns": {
+      "type": "integer",
+      "description": "Number of turns in battle"
+    },
+    "compatibility_modifier": {
+      "type": "number",
+      "description": "Elemental/numerology compatibility modifier used"
+    },
+    "battle_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of battle"
+    },
+    "universal_day": {
+      "type": "integer",
+      "description": "Universal day number when battle occurred"
+    }
+  },
+  "required": [
+    "player1_id",
+    "player2_id"
+  ]
+}

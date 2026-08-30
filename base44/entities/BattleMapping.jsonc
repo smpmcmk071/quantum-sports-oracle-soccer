@@ -1,0 +1,94 @@
+{
+  "name": "BattleMapping",
+  "type": "object",
+  "properties": {
+    "number": {
+      "type": "integer",
+      "description": "Numerology number (1-9, 11, 22, 33)"
+    },
+    "numerology_type": {
+      "type": "string",
+      "enum": [
+        "life_path",
+        "destiny",
+        "soul_urge",
+        "personality",
+        "karmic_debt"
+      ],
+      "description": "Which numerology aspect this mapping applies to"
+    },
+    "zodiac_sign": {
+      "type": "string",
+      "description": "Optional zodiac sign for zodiac-based mappings"
+    },
+    "timeline_theme": {
+      "type": "string",
+      "description": "Theme description for this number"
+    },
+    "strengths": {
+      "type": "string",
+      "description": "Comma-separated strengths"
+    },
+    "weaknesses": {
+      "type": "string",
+      "description": "Comma-separated weaknesses"
+    },
+    "health_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Health modifier"
+    },
+    "attack_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Attack modifier"
+    },
+    "defense_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Defense modifier"
+    },
+    "evasion_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Evasion modifier"
+    },
+    "speed_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Speed modifier"
+    },
+    "regen_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Regeneration modifier"
+    },
+    "wisdom_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Wisdom modifier"
+    },
+    "charisma_mod": {
+      "type": "integer",
+      "default": 0,
+      "description": "Charisma modifier"
+    },
+    "crit_chance_mod": {
+      "type": "number",
+      "default": 0,
+      "description": "Critical hit chance modifier (0.0-1.0)"
+    },
+    "special_ability": {
+      "type": "string",
+      "description": "Special ability granted by this number"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0,
+      "description": "Priority for stacking effects"
+    }
+  },
+  "required": [
+    "numerology_type"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "Game",
+  "type": "object",
+  "properties": {
+    "home_team_id": {
+      "type": "string",
+      "description": "Reference to home Team"
+    },
+    "away_team_id": {
+      "type": "string",
+      "description": "Reference to away Team"
+    },
+    "game_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the match"
+    },
+    "game_time": {
+      "type": "string",
+      "description": "Time of the match (HH:MM format)"
+    },
+    "venue": {
+      "type": "string",
+      "description": "Match venue/stadium"
+    },
+    "league": {
+      "type": "string",
+      "enum": [
+        "MLS"
+      ],
+      "default": "MLS"
+    },
+    "matchday": {
+      "type": "number",
+      "description": "MLS matchday/week number"
+    },
+    "season": {
+      "type": "number",
+      "description": "Season year (e.g., 2026)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "in_progress",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "home_score": {
+      "type": "number"
+    },
+    "away_score": {
+      "type": "number"
+    },
+    "actual_winner": {
+      "type": "string",
+      "description": "Team ID of actual winner, or 'draw'"
+    },
+    "moon_phase": {
+      "type": "string",
+      "description": "Moon phase during game"
+    },
+    "planetary_alignment": {
+      "type": "string",
+      "description": "Notable planetary alignments"
+    },
+    "espn_event_id": {
+      "type": "string",
+      "description": "ESPN event ID for API matching and deduplication"
+    }
+  },
+  "required": [
+    "home_team_id",
+    "away_team_id",
+    "game_date"
+  ]
+}

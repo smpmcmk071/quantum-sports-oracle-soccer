@@ -1,0 +1,78 @@
+{
+  "name": "Prediction",
+  "type": "object",
+  "properties": {
+    "game_id": {
+      "type": "string",
+      "description": "Reference to Game entity"
+    },
+    "predicted_winner_id": {
+      "type": "string",
+      "description": "Team ID of predicted winner"
+    },
+    "confidence_score": {
+      "type": "number",
+      "description": "Overall confidence 0-100"
+    },
+    "numerology_score": {
+      "type": "number",
+      "description": "Numerology-based score"
+    },
+    "astrology_score": {
+      "type": "number",
+      "description": "Astrology-based score"
+    },
+    "battle_stats_score": {
+      "type": "number",
+      "description": "Battle statistics score"
+    },
+    "cosmic_energy_score": {
+      "type": "number",
+      "description": "Cosmic energy alignment score"
+    },
+    "predicted_score_diff": {
+      "type": "number",
+      "description": "Predicted point differential"
+    },
+    "bet_recommendation": {
+      "type": "string",
+      "enum": [
+        "strong_bet",
+        "moderate_bet",
+        "light_bet",
+        "no_bet"
+      ],
+      "description": "Betting recommendation"
+    },
+    "suggested_units": {
+      "type": "number",
+      "description": "Suggested betting units (Kelly criterion)"
+    },
+    "prediction_notes": {
+      "type": "string",
+      "description": "Additional prediction insights"
+    },
+    "was_correct": {
+      "type": "boolean",
+      "description": "Whether prediction was correct (filled after game)"
+    },
+    "use_player_battle_stats": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to run player-vs-player battles for this prediction"
+    },
+    "player_battle_results": {
+      "type": "string",
+      "description": "JSON string of player battle simulation results"
+    },
+    "is_archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this prediction has been archived"
+    }
+  },
+  "required": [
+    "game_id",
+    "predicted_winner_id"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "name": "PlayerGameStats",
+  "type": "object",
+  "properties": {
+    "player_id": {
+      "type": "string",
+      "description": "Reference to Player entity"
+    },
+    "game_id": {
+      "type": "string",
+      "description": "Reference to Game entity"
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Reference to Team entity"
+    },
+    "opponent_team_id": {
+      "type": "string",
+      "description": "Reference to opponent Team entity"
+    },
+    "home_away": {
+      "type": "string",
+      "enum": [
+        "home",
+        "away"
+      ],
+      "description": "Whether player's team was home or away"
+    },
+    "game_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the match"
+    },
+    "venue": {
+      "type": "string",
+      "description": "Match venue/stadium"
+    },
+    "season": {
+      "type": "number",
+      "default": 2026
+    },
+    "goals": {
+      "type": "number",
+      "default": 0
+    },
+    "assists": {
+      "type": "number",
+      "default": 0
+    },
+    "minutes_played": {
+      "type": "number",
+      "default": 0
+    },
+    "shots": {
+      "type": "number",
+      "default": 0
+    },
+    "shots_on_target": {
+      "type": "number",
+      "default": 0
+    },
+    "yellow_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "red_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "saves": {
+      "type": "number",
+      "default": 0,
+      "description": "For GKs only"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Player match rating (0-10)"
+    },
+    "espn_event_id": {
+      "type": "string",
+      "description": "ESPN event ID for deduplication"
+    },
+    "espn_player_id": {
+      "type": "string",
+      "description": "ESPN athlete ID"
+    }
+  },
+  "required": [
+    "player_id",
+    "game_id",
+    "team_id"
+  ]
+}

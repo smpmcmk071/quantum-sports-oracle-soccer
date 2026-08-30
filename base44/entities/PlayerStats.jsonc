@@ -1,0 +1,103 @@
+{
+  "name": "PlayerStats",
+  "type": "object",
+  "properties": {
+    "player_id": {
+      "type": "string",
+      "description": "Reference to Player entity"
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Reference to Team entity"
+    },
+    "season": {
+      "type": "number",
+      "description": "Season year (e.g., 2026)"
+    },
+    "league": {
+      "type": "string",
+      "enum": [
+        "MLS"
+      ],
+      "default": "MLS"
+    },
+    "appearances": {
+      "type": "number",
+      "default": 0
+    },
+    "starts": {
+      "type": "number",
+      "default": 0
+    },
+    "minutes_played": {
+      "type": "number",
+      "default": 0
+    },
+    "goals": {
+      "type": "number",
+      "default": 0
+    },
+    "assists": {
+      "type": "number",
+      "default": 0
+    },
+    "shots_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "shots_on_target_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "pass_accuracy": {
+      "type": "number",
+      "description": "Pass accuracy % (0-100)"
+    },
+    "key_passes_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "dribbles_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "tackles_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "interceptions_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "yellow_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "red_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "clean_sheets": {
+      "type": "number",
+      "default": 0
+    },
+    "saves_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "rating": {
+      "type": "number",
+      "description": "Overall player rating (0-10)"
+    },
+    "astrological_alignment_score": {
+      "type": "number",
+      "description": "Astrology correlation (0-100)"
+    }
+  },
+  "required": [
+    "player_id",
+    "team_id",
+    "season",
+    "league"
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "name": "TeamStats",
+  "type": "object",
+  "properties": {
+    "team_id": {
+      "type": "string",
+      "description": "Reference to Team entity"
+    },
+    "season": {
+      "type": "number",
+      "description": "Season year (e.g., 2026)"
+    },
+    "league": {
+      "type": "string",
+      "enum": [
+        "MLS"
+      ],
+      "default": "MLS"
+    },
+    "games_played": {
+      "type": "number",
+      "default": 0
+    },
+    "wins": {
+      "type": "number",
+      "default": 0
+    },
+    "losses": {
+      "type": "number",
+      "default": 0
+    },
+    "draws": {
+      "type": "number",
+      "default": 0
+    },
+    "points": {
+      "type": "number",
+      "default": 0,
+      "description": "League table points (W=3, D=1)"
+    },
+    "goals_for": {
+      "type": "number",
+      "default": 0
+    },
+    "goals_against": {
+      "type": "number",
+      "default": 0
+    },
+    "goal_differential": {
+      "type": "number",
+      "default": 0
+    },
+    "shots_per_game": {
+      "type": "number"
+    },
+    "shots_on_target_per_game": {
+      "type": "number"
+    },
+    "possession_avg": {
+      "type": "number",
+      "description": "Average possession %"
+    },
+    "pass_accuracy_avg": {
+      "type": "number",
+      "description": "Average pass accuracy %"
+    },
+    "xg_for": {
+      "type": "number",
+      "description": "Expected goals for"
+    },
+    "xg_against": {
+      "type": "number",
+      "description": "Expected goals against"
+    },
+    "clean_sheets": {
+      "type": "number",
+      "default": 0
+    },
+    "win_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "home_record": {
+      "type": "string",
+      "description": "Home W-D-L (e.g., '8-3-2')"
+    },
+    "away_record": {
+      "type": "string",
+      "description": "Away W-D-L (e.g., '5-4-4')"
+    },
+    "astrological_alignment_score": {
+      "type": "number",
+      "description": "Astrology correlation score (0-100)"
+    },
+    "eclipse_impact_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "team_id",
+    "season",
+    "league"
+  ]
+}

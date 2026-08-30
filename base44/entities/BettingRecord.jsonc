@@ -1,0 +1,54 @@
+{
+  "name": "BettingRecord",
+  "type": "object",
+  "properties": {
+    "prediction_id": {
+      "type": "string",
+      "description": "Reference to Prediction entity"
+    },
+    "game_id": {
+      "type": "string",
+      "description": "Reference to Game entity"
+    },
+    "bet_amount": {
+      "type": "number",
+      "description": "Amount wagered"
+    },
+    "odds": {
+      "type": "number",
+      "description": "Betting odds (e.g., 1.85)"
+    },
+    "bet_type": {
+      "type": "string",
+      "enum": [
+        "moneyline",
+        "spread",
+        "over_under"
+      ],
+      "default": "moneyline"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "won",
+        "lost",
+        "push"
+      ],
+      "default": "pending"
+    },
+    "profit_loss": {
+      "type": "number",
+      "description": "Profit or loss from bet"
+    },
+    "roi": {
+      "type": "number",
+      "description": "Return on investment percentage"
+    }
+  },
+  "required": [
+    "prediction_id",
+    "game_id",
+    "bet_amount"
+  ]
+}

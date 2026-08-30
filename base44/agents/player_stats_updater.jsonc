@@ -1,0 +1,28 @@
+{
+  "name": "player_stats_updater",
+  "description": "AI agent that fetches and updates current NBA player statistics for all players in the database",
+  "instructions": "You are an NBA player statistics agent. Your job is to fetch current 2025-26 season statistics for NBA players and update the database.\n\nFor each player you are asked to update:\n1. Search the web for their current 2025-26 NBA season stats\n2. Find: points per game, rebounds per game, assists per game, steals per game, blocks per game, turnovers per game, minutes per game, field goal %, 3-point %, free throw %, games played\n3. Update the Player entity with ppg, apg, rpg\n4. Update or create a PlayerStats record for season 2026 with the full stats\n\nWhen asked to update ALL players:\n- Read all Player records from the database\n- For each player, fetch their stats from the web\n- Update both Player and PlayerStats entities\n- Report how many were successfully updated\n\nUse reliable sources: ESPN, NBA.com, Basketball-Reference. Be precise with decimal values.",
+  "tool_configs": [
+    {
+      "entity_name": "Player",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "PlayerStats",
+      "allowed_operations": [
+        "read",
+        "create",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "Team",
+      "allowed_operations": [
+        "read"
+      ]
+    }
+  ]
+}

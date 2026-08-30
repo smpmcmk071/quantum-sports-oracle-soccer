@@ -1,0 +1,47 @@
+{
+  "name": "Owner",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Owner full name"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Owner birth date"
+    },
+    "birth_time": {
+      "type": "string",
+      "description": "Birth time (HH:MM format)"
+    },
+    "birth_place": {
+      "type": "string",
+      "description": "Birth place (city, country) for accurate chart calculations"
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Reference to Team entity"
+    },
+    "zodiac_sign": {
+      "type": "string",
+      "description": "Zodiac sign"
+    },
+    "life_path_number": {
+      "type": "number",
+      "description": "Numerology life path number"
+    },
+    "destiny_number": {
+      "type": "number",
+      "description": "Numerology destiny number from name"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about owner"
+    }
+  },
+  "required": [
+    "name",
+    "birth_date"
+  ]
+}

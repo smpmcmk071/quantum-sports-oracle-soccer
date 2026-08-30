@@ -1,0 +1,86 @@
+{
+  "name": "Team",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Team name"
+    },
+    "abbreviation": {
+      "type": "string",
+      "description": "Team abbreviation (e.g., LAFC, NYC)"
+    },
+    "espn_id": {
+      "type": "string",
+      "description": "ESPN team ID"
+    },
+    "city": {
+      "type": "string",
+      "description": "Team city/location"
+    },
+    "league": {
+      "type": "string",
+      "enum": [
+        "MLS"
+      ],
+      "default": "MLS",
+      "description": "League"
+    },
+    "conference": {
+      "type": "string",
+      "enum": [
+        "Eastern",
+        "Western"
+      ],
+      "description": "MLS Conference"
+    },
+    "city_numerology": {
+      "type": "number",
+      "description": "Numerology number of city name"
+    },
+    "founded_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date team was founded"
+    },
+    "zodiac_sign": {
+      "type": "string",
+      "description": "Western zodiac sign based on founded date"
+    },
+    "chinese_zodiac": {
+      "type": "string",
+      "description": "Chinese zodiac sign based on founding year"
+    },
+    "life_path_number": {
+      "type": "number",
+      "description": "Numerology life path number"
+    },
+    "destiny_number": {
+      "type": "number",
+      "description": "Numerology destiny number from team name"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Team logo image URL"
+    },
+    "primary_color": {
+      "type": "string",
+      "description": "Team primary color hex code"
+    },
+    "wins": {
+      "type": "number",
+      "default": 0
+    },
+    "losses": {
+      "type": "number",
+      "default": 0
+    },
+    "draws": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

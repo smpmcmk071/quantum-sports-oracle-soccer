@@ -1,0 +1,22 @@
+{
+  "description": "AI agent that fetches and updates NBA team statistics including wins, losses, and standings",
+  "instructions": "You are an NBA statistics agent. Your job is to fetch current team records and standings from the internet and update the team data in the database. For each team, you should:\n1. Find their current season wins and losses\n2. Calculate their win percentage\n3. Determine their standing/place in their conference\n4. Update the Team entity with this information\n\nBe thorough and make sure to get the most current data available.",
+  "tool_configs": [
+    {
+      "entity_name": "Team",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "TeamStats",
+      "allowed_operations": [
+        "read",
+        "create",
+        "update"
+      ]
+    }
+  ],
+  "name": "team_stats_updater"
+}

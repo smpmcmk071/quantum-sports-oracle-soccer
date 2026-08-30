@@ -1,0 +1,136 @@
+{
+  "name": "Player",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Player full name"
+    },
+    "espn_id": {
+      "type": "string",
+      "description": "Unique ESPN ID for the player"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Player birth date"
+    },
+    "birth_time": {
+      "type": "string",
+      "description": "Birth time for advanced astrology (HH:MM format)"
+    },
+    "birth_place": {
+      "type": "string",
+      "description": "Birth place for advanced astrology"
+    },
+    "nationality": {
+      "type": "string",
+      "description": "Player nationality/country"
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Reference to Team entity"
+    },
+    "position": {
+      "type": "string",
+      "enum": [
+        "GK",
+        "CB",
+        "LB",
+        "RB",
+        "CDM",
+        "CM",
+        "CAM",
+        "LW",
+        "RW",
+        "ST",
+        "CF"
+      ],
+      "description": "Player position"
+    },
+    "jersey_number": {
+      "type": "number"
+    },
+    "is_starter": {
+      "type": "boolean",
+      "default": false
+    },
+    "height": {
+      "type": "string",
+      "description": "Player height (e.g., 6-1)"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Player weight in pounds"
+    },
+    "age": {
+      "type": "number"
+    },
+    "zodiac_sign": {
+      "type": "string"
+    },
+    "chinese_zodiac": {
+      "type": "string"
+    },
+    "life_path_number": {
+      "type": "number"
+    },
+    "destiny_number": {
+      "type": "number"
+    },
+    "goals": {
+      "type": "number",
+      "default": 0
+    },
+    "assists": {
+      "type": "number",
+      "default": 0
+    },
+    "appearances": {
+      "type": "number",
+      "default": 0
+    },
+    "minutes_played": {
+      "type": "number",
+      "default": 0
+    },
+    "shots_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "pass_accuracy": {
+      "type": "number",
+      "description": "Pass accuracy % (0-100)"
+    },
+    "dribbles_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "tackles_per_game": {
+      "type": "number",
+      "default": 0
+    },
+    "yellow_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "red_cards": {
+      "type": "number",
+      "default": 0
+    },
+    "clean_sheets": {
+      "type": "number",
+      "default": 0,
+      "description": "For GKs only"
+    },
+    "saves_per_game": {
+      "type": "number",
+      "default": 0,
+      "description": "For GKs only"
+    }
+  },
+  "required": [
+    "name",
+    "birth_date"
+  ]
+}
