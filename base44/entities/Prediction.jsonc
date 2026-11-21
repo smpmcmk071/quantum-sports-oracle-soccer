@@ -8,31 +8,40 @@
     },
     "predicted_winner_id": {
       "type": "string",
-      "description": "Team ID of predicted winner"
+      "description": "Team ID of predicted winner, or 'draw'"
+    },
+    "predicted_outcome": {
+      "type": "string",
+      "enum": [
+        "home",
+        "away",
+        "draw"
+      ],
+      "description": "Which side the engine expects to win"
     },
     "confidence_score": {
       "type": "number",
-      "description": "Overall confidence 0-100"
+      "description": "Overall confidence 0-100, shrunk toward chance when the sample is small"
     },
     "numerology_score": {
       "type": "number",
-      "description": "Numerology-based score"
+      "description": "Numerology-based score for the home team (0-100)"
     },
     "astrology_score": {
       "type": "number",
-      "description": "Astrology-based score"
+      "description": "Astrology-based score for the home team (0-100)"
     },
     "battle_stats_score": {
       "type": "number",
-      "description": "Battle statistics score"
+      "description": "Statistical expected-goals edge for the home team (0-100)"
     },
     "cosmic_energy_score": {
       "type": "number",
-      "description": "Cosmic energy alignment score"
+      "description": "Blended numerology and astrology alignment score"
     },
     "predicted_score_diff": {
       "type": "number",
-      "description": "Predicted point differential"
+      "description": "Goal differential of the most likely scoreline"
     },
     "bet_recommendation": {
       "type": "string",
@@ -42,7 +51,7 @@
         "light_bet",
         "no_bet"
       ],
-      "description": "Betting recommendation"
+      "description": "Strength of the lean, capped by sample size"
     },
     "suggested_units": {
       "type": "number",
@@ -50,11 +59,65 @@
     },
     "prediction_notes": {
       "type": "string",
-      "description": "Additional prediction insights"
+      "description": "Short summary of the call"
+    },
+    "scenarios": {
+      "type": "string",
+      "description": "JSON string of the ranked scoreline scenarios with likelihoods"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "JSON string with verdict plus statistical and cosmic reasoning"
+    },
+    "input_snapshot": {
+      "type": "string",
+      "description": "JSON string of the exact team, cosmic and statistical inputs used, frozen at generation time"
+    },
+    "universal_day": {
+      "type": "number",
+      "description": "Universal day number of the match date"
+    },
+    "moon_phase": {
+      "type": "string",
+      "description": "Moon phase on the match date"
+    },
+    "data_quality": {
+      "type": "string",
+      "enum": [
+        "full",
+        "partial",
+        "limited"
+      ],
+      "description": "How much completed-game data backed this reading"
+    },
+    "sample_games": {
+      "type": "number",
+      "description": "Smallest completed-game sample of the two teams at generation time"
+    },
+    "engine_version": {
+      "type": "string",
+      "description": "Version of the prediction engine that produced this reading"
     },
     "was_correct": {
       "type": "boolean",
-      "description": "Whether prediction was correct (filled after game)"
+      "description": "Whether the called outcome matched the final result"
+    },
+    "actual_winner_id": {
+      "type": "string",
+      "description": "Team ID of the actual winner, or 'draw'"
+    },
+    "actual_home_score": {
+      "type": "number",
+      "description": "Final home score, recorded after the match"
+    },
+    "actual_away_score": {
+      "type": "number",
+      "description": "Final away score, recorded after the match"
+    },
+    "reconciled_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the result was recorded against this prediction"
     },
     "use_player_battle_stats": {
       "type": "boolean",
